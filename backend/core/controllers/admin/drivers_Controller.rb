@@ -1,46 +1,53 @@
 # frozen_string_literal: true
 
-class Admin::DriversController < ApplicationController
-  before_action :set_driver, only: [:show, :update, :destroy]
+module Admin
+  class DriversController < ApplicationController
+    before_action :set_driver, only: [:show, :edit, :update, :destroy]
 
-  def index
-    @drivers = Driver.all
-    render json: @drivers
-  end
-
-  def show
-    render json: @driver
-  end
-
-  def create
-    @driver = Driver.new(driver_params)
-    if @driver.save
-      render json: @driver, status: :created
-    else
-      render json: @driver.errors, status: :unprocessable_entity
+    def index
+      @drivers = Driver.all
     end
-  end
 
-  def update
-    if @driver.update(driver_params)
-      render json: @driver
-    else
-      render json: @driver.errors, status: :unprocessable_entity
+    def show
     end
-  end
 
-  def destroy
-    @driver.destroy
-    head :no_content
-  end
+    def new
+      @driver = Driver.new
+    end
 
-  private
+    def create
+      @driver = Driver.new(driver_params)
+      if @driver.save
+        redirect_to admin_driver_path(@driver), notice: 'Driver created successfully.'
+      else
+        render :new
+      end
+    end
 
-  def set_driver
-    @driver = Driver.find(params[:id])
-  end
+    def edit
+    end
 
-  def driver_params
-    params.require(:driver).permit(:name, :email, :vehicle_number)
+    def update
+      if @driver.update(driver_params)
+        redirect_to admin_driver_path(@driver), notice: 'Driver updated successfully.'
+      else
+        render :edit
+      end
+    end
+
+    def destroy
+      @driver.destroy
+      redirect_to admin_drivers_path, notice: 'Driver deleted successfully.'
+    end
+
+    private
+
+    def set_driver
+      @driver = Driver.find(params[:id])
+    end
+
+    def driver_params
+      params.require(:driver).permit(:name, :email, :license_number)
+    end
   end
 end
