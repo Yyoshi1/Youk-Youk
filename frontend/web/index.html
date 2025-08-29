@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Window System Demo</title>
+  <link rel="stylesheet" href="styles/windows.css">
+  <script type="module" src="controllers/window_controller.js"></script>
+</head>
+<body>
+  <div class="hidden-windows-container" data-controller="window" data-window-target="hiddenContainer"></div>
+
+  <div class="window" data-id="win1" data-icon="📝">
+    <div class="window-header">
+      <div class="window-title">Admin Panel</div>
+      <div class="window-controls">
+        <div class="window-btn-close" onclick="event.currentTarget.closest('.window').remove()"></div>
+        <div class="window-btn-hide" onclick="event.currentTarget.closest('.window').style.display='none';"></div>
+        <div class="window-btn-maximize" onclick="alert('Maximize Clicked')"></div>
+      </div>
+    </div>
+    <div class="window-body">
+      <p>This is a sample window content for Admin Panel.</p>
+    </div>
+  </div>
+
+  <div class="window" data-id="win2" data-icon="📊">
+    <div class="window-header">
+      <div class="window-title">Investor Dashboard</div>
+      <div class="window-controls">
+        <div class="window-btn-close" onclick="event.currentTarget.closest('.window').remove()"></div>
+        <div class="window-btn-hide" onclick="event.currentTarget.closest('.window').style.display='none';"></div>
+        <div class="window-btn-maximize" onclick="alert('Maximize Clicked')"></div>
+      </div>
+    </div>
+    <div class="window-body">
+      <p>This is a sample window content for Investor Dashboard.</p>
+    </div>
+  </div>
+
+</body>
+</html>
