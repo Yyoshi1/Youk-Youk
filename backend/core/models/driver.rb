@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class Driver < ApplicationRecord
-  self.table_name = 'drivers'
+  # ارتباط بالرحلات
+  has_many :trip_drivers
+  has_many :trips, through: :trip_drivers
 
-  belongs_to :trip, optional: true
-
-  validates :name, presence: true
-  validates :license_number, presence: true, uniqueness: true
+  # التحقق من البيانات الأساسية
+  validates :name, :email, :license_number, presence: true
+  validates :email, uniqueness: true
 end
