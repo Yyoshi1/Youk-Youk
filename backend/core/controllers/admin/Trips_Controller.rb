@@ -1,46 +1,55 @@
 # frozen_string_literal: true
 
-class Admin::TripsController < ApplicationController
-  before_action :set_trip, only: [:show, :update, :destroy]
+module Admin
+  class TripsController < ApplicationController
+    before_action :set_trip, only: [:show, :edit, :update, :destroy]
 
-  def index
-    @trips = Trip.all
-    render json: @trips
-  end
-
-  def show
-    render json: @trip
-  end
-
-  def create
-    @trip = Trip.new(trip_params)
-    if @trip.save
-      render json: @trip, status: :created
-    else
-      render json: @trip.errors, status: :unprocessable_entity
+    def index
+      @trips = Trip.all
     end
-  end
 
-  def update
-    if @trip.update(trip_params)
-      render json: @trip
-    else
-      render json: @trip.errors, status: :unprocessable_entity
+    def show
     end
-  end
 
-  def destroy
-    @trip.destroy
-    head :no_content
-  end
+    def new
+      @trip = Trip.new
+    end
 
-  private
+    def create
+      @trip = Trip.new(trip_params)
+      if @trip.save
+        redirect_to admin_trip_path(@trip), notice: 'Trip created successfully.'
+      else
+        render :new
+      end
+    end
 
-  def set_trip
-    @trip = Trip.find(params[:id])
-  end
+    def edit
+    end
 
-  def trip_params
-    params.require(:trip).permit(:name, :start_location, :end_location, :departure_time, :arrival_time, :country_id, :model_id)
+    def update
+      if @trip.update(trip_params)
+        redirect_to admin_trip_path(@trip), notice: 'Trip updated successfully.'
+      else
+        render :edit
+      end
+    end
+
+    def destroy
+      @trip.destroy
+      redirect_to admin_trips_path, notice: 'Trip deleted successfully.'
+    end
+
+    private
+
+    def set_trip
+      @trip = Trip.find(params[:id])
+    end
+
+    def trip_params
+      params.require(:trip).permit(:name, :model_id, :driver_id, :departure_time, :arrival_time)
+    end
   end
 end
+
+
