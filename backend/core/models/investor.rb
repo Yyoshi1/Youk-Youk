@@ -19,7 +19,7 @@ class Investor < ApplicationRecord
   end
 
   def detach_level_if_full_sale
-    if partial_share? && share_percentage >= 100
+    if full_level? && share_percentage >= 100
       update(continent: nil, country: nil, model: nil)
     end
   end
