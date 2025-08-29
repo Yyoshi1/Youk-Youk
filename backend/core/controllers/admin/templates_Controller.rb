@@ -1,46 +1,35 @@
 # frozen_string_literal: true
 
-class Admin::TemplatesController < ApplicationController
-  before_action :set_template, only: [:show, :update, :destroy]
-
-  def index
-    @templates = Template.all
-    render json: @templates
-  end
-
-  def show
-    render json: @template
-  end
-
-  def create
-    @template = Template.new(template_params)
-    if @template.save
-      render json: @template, status: :created
-    else
-      render json: @template.errors, status: :unprocessable_entity
+class CreateTemplates < ActiveRecord::Migration[7.0]
+  def change
+    # جدول القوالب
+    create_table :templates do |t|
+      t.string :name, null: false
+      t.text :description, null: false
+      t.timestamps
     end
-  end
+    add_index :templates, :name, unique: true
 
-  def update
-    if @template.update(template_params)
-      render json: @template
-    else
-      render json: @template.errors, status: :unprocessable_entity
+    # جدول نسخ القوالب
+    create_table :template_versions do |t|
+      t.references :template, null: false, foreign_key: true
+      t.string :version_number, null: false
+      t.timestamps
     end
-  end
 
-  def destroy
-    @template.destroy
-    head :no_content
-  end
+    # جدول مكونات النسخ
+    create_table :template_components do |t|
+      t.references :template_version, null: false, foreign_key: true
+      t.string :name, null: false
+      t.string :component_type, null: false
+      t.timestamps
+    end
 
-  private
-
-  def set_template
-    @template = Template.find(params[:id])
-  end
-
-  def template_params
-    params.require(:template).permit(:name, :description, :version_number, components_attributes: [:id, :name, :component_type, :_destroy], assets_attributes: [:id, :file, :_destroy])
+    # جدول ملفات النسخ
+    create_table :template_assets do |t|
+      t.references :template_version, null: false, foreign_key: true
+      t.string :file_name
+      t.timestamps
+    end
   end
 end
