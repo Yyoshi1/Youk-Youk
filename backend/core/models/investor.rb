@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Investor < ApplicationRecord
-  # الارتباط بالمستويات المختلفة
+  # العلاقات الهرمية بالمستويات المختلفة
   belongs_to :continent, optional: true
   belongs_to :country, optional: true
   belongs_to :model, optional: true
@@ -12,7 +12,10 @@ class Investor < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :share_percentage, numericality: { greater_than: 0, less_than_or_equal_to: 100 }
 
-  # طرق مساعدة
+  # callback لتفعيل فصل المستوى تلقائيًا بعد الحفظ
+  after_save :detach_level_if_full_sale
+
+  # طرق مساعدة لتسهيل الفحص
   def full_level?
     investor_type == 'full_level'
   end
@@ -23,7 +26,7 @@ class Investor < ApplicationRecord
 
   # فصل المستوى عند بيع كامل الحصة
   def detach_level_if_full_sale
-    if partial_share? && share_percentage >= 100
+    if full_level? && share_percentage >= 100
       # إزالة الارتباط بالمستوى بعد بيع الحصة بالكامل
       update(continent: nil, country: nil, model: nil)
     end
