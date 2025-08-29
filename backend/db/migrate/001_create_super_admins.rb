@@ -1,10 +1,10 @@
-class CreateSuperAdmins < ActiveRecord::Migration[7.0]
-  def change
-    create_table :super_admins do |t|
-      t.string :name, null: false
-      t.string :email, null: false, index: { unique: true }
-      t.string :encrypted_password, null: false
+# frozen_string_literal: true
 
+class CreateContinents < ActiveRecord::Migration[7.0]
+  def change
+    create_table :continents do |t|
+      t.string :name, null: false
+      t.string :code, null: false, unique: true
       t.timestamps
     end
   end
