@@ -1,0 +1,76 @@
+/* windows.css */
+
+/* نافذة موحدة لجميع اللوحات */
+.window {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid #E5E7EB;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+/* رأس النافذة */
+.window-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #F3F4F6;
+  cursor: grab;
+}
+
+/* ألوان أزرار التحكم */
+.window-btn-close {
+  background-color: #EF4444; /* أحمر */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+}
+
+.window-btn-hide {
+  background-color: #FACC15; /* أصفر */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+}
+
+.window-btn-maximize {
+  background-color: #3B82F6; /* أزرق */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+}
+
+/* أيقونات النوافذ المخفية */
+.hidden-window {
+  width: 30px;
+  height: 30px;
+  margin: 2px;
+  text-align: center;
+  line-height: 30px;
+  background-color: rgba(107, 114, 128, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* حاوية النوافذ المخفية على الجانب */
+.hidden-windows-container {
+  position: fixed;
+  top: 10px;
+  right: 2px; /* مسافة بسيطة عن الحافة */
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+/* محتوى النافذة */
+.window-body {
+  padding: 1rem;
+  flex: 1;
+  overflow: auto;
+}
