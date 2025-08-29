@@ -2,7 +2,6 @@
 
 class TemplateComponent < ApplicationRecord
   belongs_to :template_version
-
-  validates :name, presence: true
-  validates :component_type, presence: true, inclusion: { in: ['header', 'footer', 'card', 'section'] }
+  has_many :template_assets, dependent: :destroy
+  validates :component_type, :content, presence: true
 end
