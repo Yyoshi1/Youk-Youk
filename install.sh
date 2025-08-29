@@ -1,25 +1,30 @@
 #!/bin/bash
 
-echo "بدء تثبيت مشروع Youkyouk..."
+# ===========================
+# Youkyouk Installation Script
+# ===========================
 
-# تحديث النظام
+echo "Starting Youkyouk installation..."
+
+# 1️⃣ تحديث النظام وتثبيت الحزم المطلوبة
 sudo apt update && sudo apt upgrade -y
+sudo apt install -y postgresql postgresql-contrib git curl build-essential
 
-# تثبيت Ruby و Rails و Bundler
-sudo apt install -y ruby-full build-essential zlib1g-dev
-gem install rails bundler
+# 2️⃣ إعداد قاعدة البيانات
+sudo -u postgres psql -c "CREATE USER youkyouk_user WITH PASSWORD 'secure_password';"
+sudo -u postgres psql -c "CREATE DATABASE youkyouk_db OWNER youkyouk_user;"
 
-# تثبيت PostgreSQL
-sudo apt install -y postgresql postgresql-contrib libpq-dev
+# 3️⃣ تثبيت Ruby & Bundler
+sudo apt install -y rbenv ruby-build
+rbenv install 3.3.0
+rbenv global 3.3.0
+gem install bundler
 
-# إعداد قاعدة البيانات
-echo "إنشاء قاعدة البيانات..."
-sudo -u postgres psql -c "CREATE DATABASE youkyouk_db;"
-
-# تثبيت التبعيات
+# 4️⃣ تثبيت الجواهر
 bundle install
 
-# تهيئة قاعدة البيانات
-rails db:create db:migrate db:seed
+# 5️⃣ إعداد قواعد البيانات
+rails db:create
+rails db:migrate
 
-echo "تم تثبيت مشروع Youkyouk بنجاح!"
+echo "Installation completed successfully!"
