@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class Passenger < ApplicationRecord
-  self.table_name = 'passengers'
+  # ارتباط بالرحلات
+  has_many :trip_passengers
+  has_many :trips, through: :trip_passengers
 
-  belongs_to :trip, optional: true
-
-  validates :name, presence: true
-  validates :email, presence: true, uniqueness: true
+  # التحقق من البيانات الأساسية
+  validates :name, :email, presence: true
+  validates :email, uniqueness: true
 end
