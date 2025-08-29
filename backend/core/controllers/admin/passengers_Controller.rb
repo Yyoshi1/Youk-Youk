@@ -1,46 +1,53 @@
 # frozen_string_literal: true
 
-class Admin::PassengersController < ApplicationController
-  before_action :set_passenger, only: [:show, :update, :destroy]
+module Admin
+  class PassengersController < ApplicationController
+    before_action :set_passenger, only: [:show, :edit, :update, :destroy]
 
-  def index
-    @passengers = Passenger.all
-    render json: @passengers
-  end
-
-  def show
-    render json: @passenger
-  end
-
-  def create
-    @passenger = Passenger.new(passenger_params)
-    if @passenger.save
-      render json: @passenger, status: :created
-    else
-      render json: @passenger.errors, status: :unprocessable_entity
+    def index
+      @passengers = Passenger.all
     end
-  end
 
-  def update
-    if @passenger.update(passenger_params)
-      render json: @passenger
-    else
-      render json: @passenger.errors, status: :unprocessable_entity
+    def show
     end
-  end
 
-  def destroy
-    @passenger.destroy
-    head :no_content
-  end
+    def new
+      @passenger = Passenger.new
+    end
 
-  private
+    def create
+      @passenger = Passenger.new(passenger_params)
+      if @passenger.save
+        redirect_to admin_passenger_path(@passenger), notice: 'Passenger created successfully.'
+      else
+        render :new
+      end
+    end
 
-  def set_passenger
-    @passenger = Passenger.find(params[:id])
-  end
+    def edit
+    end
 
-  def passenger_params
-    params.require(:passenger).permit(:name, :email)
+    def update
+      if @passenger.update(passenger_params)
+        redirect_to admin_passenger_path(@passenger), notice: 'Passenger updated successfully.'
+      else
+        render :edit
+      end
+    end
+
+    def destroy
+      @passenger.destroy
+      redirect_to admin_passengers_path, notice: 'Passenger deleted successfully.'
+    end
+
+    private
+
+    def set_passenger
+      @passenger = Passenger.find(params[:id])
+    end
+
+    def passenger_params
+      params.require(:passenger).permit(:name, :email)
+    end
   end
 end
