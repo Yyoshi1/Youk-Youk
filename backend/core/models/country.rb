@@ -5,5 +5,8 @@ class Country < ApplicationRecord
   has_many :models, dependent: :destroy
   has_many :investors, dependent: :nullify
 
+  # مسؤول الدولة والمساعدين
+  has_many :country_admins, class_name: 'Admin', foreign_key: 'country_id', dependent: :destroy
+
   validates :name, presence: true, uniqueness: { scope: :continent_id }
 end
