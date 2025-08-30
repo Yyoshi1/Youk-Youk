@@ -1,6 +1,6 @@
 MIT License (Extended Version)
 
-Copyright (c) 2025 Abdeljalil Doua
+Copyright (c) 2025 Youkyouk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software, its source code, associated documentation files, libraries,
@@ -16,7 +16,7 @@ conditions and limitations:
      portions, or derivative works of the Software.
    - Any public or private use, whether in digital products, websites, mobile
      applications, or any other form, must retain proper attribution to the
-     original author, Abdeljalil Doua, and the project "Youkyouk".
+     project "Youkyouk".
 
 2. Scope of Permission:
    - You are granted the right to use the Software for personal, educational,
@@ -30,7 +30,7 @@ conditions and limitations:
    - The Software is provided "as is", without any warranty of any kind, either
      expressed or implied, including but not limited to warranties of
      merchantability, fitness for a particular purpose, or non-infringement.
-   - The author is not responsible for any direct, indirect, incidental,
+   - The project is not responsible for any direct, indirect, incidental,
      consequential, or special damages, including but not limited to lost
      profits, data loss, or operational failure, arising out of or in
      connection with the use, modification, or distribution of the Software.
@@ -40,22 +40,22 @@ conditions and limitations:
      terms constitutes a violation of this License.
 
 4. Liability:
-   - The author, contributors, maintainers, or distributors of the Software
+   - The project, contributors, maintainers, or distributors of the Software
      shall not be liable for any claims, damages, losses, or legal disputes
      arising from the installation, deployment, use, misuse, or adaptation of
      the Software.
-   - Users agree to indemnify and hold harmless the author and contributors
+   - Users agree to indemnify and hold harmless the project and contributors
      against any claims arising from their use of the Software.
 
 5. Integrity of the Original Work:
    - While modifications and derivative works are allowed, users must not
-     misrepresent the Software as being officially endorsed by the original
-     author unless explicitly authorized.
+     misrepresent the Software as being officially endorsed by the project
+     unless explicitly authorized.
    - Redistributions in modified form must clearly indicate that the Software
      has been modified, including the date and nature of the modifications.
 
 6. Support and Maintenance:
-   - The author is under no obligation to provide support, updates, patches,
+   - The project is under no obligation to provide support, updates, patches,
      or maintenance for the Software.
    - Users are encouraged to contribute improvements, bug fixes, and
      enhancements back to the community under the same license.
@@ -65,11 +65,11 @@ conditions and limitations:
      trade names, or logos associated with the Software without prior written
      consent.
    - Any use of the Software in a commercial product or service must comply
-     with this License and maintain proper credit to the original author.
+     with this License and maintain proper credit to the project "Youkyouk".
 
 THE SOFTWARE IS PROVIDED "AS IS" AND ALL WARRANTIES, CONDITIONS, AND
 REPRESENTATIONS, WHETHER EXPRESS OR IMPLIED, ARE DISCLAIMED. IN NO EVENT
-SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES,
+SHALL THE PROJECT OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES,
 OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE,
 ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
