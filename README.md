@@ -6,89 +6,69 @@
 
 ---
 
-## **1. Overview**
+## 1. Overview
 
-Youkyouk is a comprehensive system for managing ride services and multi-domain applications across countries and models. It is a complete platform for managing passengers, drivers, investors, and administrators. The system includes:  
+**Youkyouk** is a comprehensive system designed for managing ride services and multi-domain applications across countries and models. It provides a complete platform to manage passengers, drivers, investors, and administrators with advanced functionalities.  
+
+The system includes:  
 
 - Mobile applications for passengers and drivers.  
-- Web applications for each user and investor, with dedicated dashboards.  
-- Advanced dashboards for administrators and investors at full or partial levels.  
-- Multi-continent, multi-country, and multi-model support, with domains for each model.  
+- Web applications for users and investors with dedicated dashboards.  
+- Advanced dashboards for administrators and investors at full or partial control levels.  
+- Multi-continent, multi-country, and multi-model support, with separate domains for each model.  
 - Multi-language support (Arabic, French, English) and multi-currency support.  
 - Advanced commission management system for drivers, distributing commissions between the system, parent driver, and subordinate drivers.  
-- Support for add-ons that can be activated/deactivated, such as: stop-time accounting, price negotiation system, instant messaging, and real-time notifications.  
-- Security enhancements to prevent hacking, tampering, or unauthorized web access.  
-- Page caching and prefetching to improve user experience and speed up frequently accessed pages.  
-- Embedded template editor for drivers and investors to customize mobile app layouts without affecting the main application.  
-- Maps, GPS tracking, and route drawing between passengers and drivers, with live trip previews.  
+- Add-ons support (activate/deactivate) such as: stop-time accounting, price negotiation system, instant messaging, and real-time notifications.  
+- Security enhancements to prevent hacking, tampering, or unauthorized access.  
+- Page caching and prefetching for faster access to frequently visited pages.  
+- Embedded template editor for drivers and investors to customize mobile app layouts without affecting the main system.  
+- Maps, GPS tracking, and route visualization between passengers and drivers, with live trip previews.  
 
 ---
 
-## **2. Project Structure (Detailed)**
+## 2. Project Structure (Detailed)
 
 Youkyouk/
 │
 ├── .env                        # Core system settings (Database, API keys, etc.)
 ├── install.sh                   # Full installation script
-├── README.md                    # Full project documentation
+├── README.md                    # Project documentation
 ├── LICENSE                      # MIT License file
-├── package.json                 # Node.js project settings and dependencies
-├── package-lock.json            # Locked package versions
 │
 ├── frontend/                    # User interfaces for mobile and web apps
 │   ├── MobileApp/
-│   │   ├── PassengerMode/       # Passenger mode
+│   │   ├── PassengerMode/       # Passenger mobile app
 │   │   │   ├── screens/
-│   │   │   │   ├── Home.js
-│   │   │   │   ├── Trips.js
-│   │   │   │   ├── Profile.js
-│   │   │   │   └── Chat.js
-│   │   │   ├── components/      # UI components (Buttons, Cards, Maps)
-│   │   │   ├── services/        # Services (API calls, Notifications, Maps)
-│   │   │   └── hooks/           # Hooks for dynamic features (GPS, Notifications, State)
-│   │   │
-│   │   └── DriverMode/          # Driver mode
+│   │   │   ├── components/
+│   │   │   ├── services/
+│   │   │   └── hooks/
+│   │   └── DriverMode/          # Driver mobile app
 │   │       ├── screens/
-│   │       │   ├── Dashboard.js
-│   │       │   ├── Trips.js
-│   │       │   └── Earnings.js
-│   │       ├── components/      # Components like Map, TripCard, Forms
-│   │       ├── services/        # API, GPS, Notifications
-│   │       └── hooks/           # Hooks for driver GPS, maps, trips
-│   │
+│   │       ├── components/
+│   │       ├── services/
+│   │       └── hooks/
 │   └── WebApp/                  # Web application
 │       ├── pages/
-│       │   ├── Dashboard.vue
-│       │   ├── Trips.vue
-│       │   ├── Users.vue
-│       │   ├── Settings.vue
-│       │   ├── Home.vue
-│       │   ├── Profile.vue
-│       │   └── Chat.vue
-│       ├── components/          # Shared UI components
-│       │   ├── Layout/          # Navbar, Sidebar, Footer
-│       │   ├── Forms/           # Form components
-│       │   ├── Tables/          # Table components
-│       │   └── Modals/          # Modals for confirmation, alerts, messages
-│       ├── services/            # Shared services (API, Auth, Maps)
-│       └── store/               # State management (Vuex/Redux)
-│
+│       ├── components/
+│       ├── services/
+│       └── store/
+
 ├── backend/
 │   ├── core/
-│   │   ├── models/              # Tables and objects (Admin, Passenger, Driver, Trip, Template, Investor)
-│   │   ├── controllers/         # Request handling and business logic
+│   │   ├── models/              # Admin, Passenger, Driver, Trip, Template, Investor
+│   │   ├── controllers/         # Business logic
 │   │   ├── db/
 │   │   │   ├── migrate/         # Database migration scripts
 │   │   │   └── seeds.rb         # Sample data
-│   │   ├── services/            # Internal services (Payments, Maps, Notifications, Logging, ZIP Protection)
+│   │   ├── services/            # Payments, Notifications, Maps, Logging
 │   │   └── jobs/                # Background tasks (Retry, Notifications, Template Updates)
-│
-├── Public/Website/              # Publicly accessible web files
-├── Docs/                        # Documentation for SuperAdmin, ContinentAdmin, CountryAdmin, ModelAdmin, Investors
-├── Investors/                   # Investors files with full or partial control
-├── Trips/                       # Trips management per country and model
+
+├── Public/Website/              # Public web files
+├── Docs/                        # Documentation for Admins and Investors
+├── Investors/                   # Investor-related files
+├── Trips/                       # Trips management
 ├── Logs/                        # Application and error logs
-├── Config/                       # Configuration files (Database, Secrets, Application)
+├── Config/                       # Config files (Database, Secrets, Application)
 └── System Structure/
     ├── SuperAdmin/              # Top-level administrator dashboard
     ├── Continent Level/
@@ -122,4 +102,89 @@ Youkyouk/
         ├── Admin Dashboard Analytics
         ├── Passenger/Sender Stop Time Accounting Add-on
         ├── Page Caching & Prefetching
-        └── Security Enhancements (Prevent Web Tampering, Session Validation, Encrypted Storage)
+        └── Security Enhancements (Web Tampering Prevention, Session Validation, Encrypted Storage)
+
+---
+
+## 3. System Requirements
+
+- Ruby 3.3.x  
+- Rails 7.x  
+- PostgreSQL 15.x or higher  
+- Redis (optional, for background jobs and caching)  
+- Node.js 20.x (for Webpacker / frontend asset compilation if required)  
+- Yarn or NPM  
+
+> Note: Node.js is optional, as the system primarily relies on Ruby/Rails. Node.js is only needed if frontend assets compilation is required.
+
+---
+
+## 4. Installation Guide
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/youkyouk/youkyouk.git
+cd youkyouk
+```
+
+2. **Install Ruby dependencies**
+
+```bash
+gem install bundler
+bundle install
+```
+
+3. **Database setup**
+
+- Configure your `.env` file with database credentials:
+
+```
+DATABASE_URL=postgres://username:password@localhost:5432/youkyouk_db
+```
+
+- Create and migrate the database:
+
+```bash
+rails db:create
+rails db:migrate
+rails db:seed
+```
+
+4. **Install frontend dependencies (if needed)**
+
+```bash
+cd frontend/WebApp
+yarn install
+# or
+npm install
+```
+
+5. **Run the server**
+
+```bash
+rails server
+```
+
+6. **Access the application**
+
+- Web: http://localhost:3000  
+- Mobile apps: Follow the instructions in the MobileApp folder to run on simulator or device.
+
+---
+
+## 5. License
+
+This project is licensed under the **MIT License – Youkyouk**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 6. Contributions
+
+We welcome contributions! Please follow the standard GitHub fork & pull request workflow. Ensure all contributions respect the MIT license and provide proper attribution to the project **Youkyouk**.
+
+---
+
+## 7. Support
+
+For issues or support, contact **Abdeljalil Doua** via the repository issues tab or email provided in the documentation.
