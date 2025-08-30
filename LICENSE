@@ -1,7 +1,79 @@
-MIT License
+MIT License (Extended Version)
 
-Copyright (c) 2025 Youkyouk Team
+Copyright (c) 2025 Abdeljalil Doua
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
+of this software, its source code, associated documentation files, libraries,
+modules, templates, and any other digital or textual assets included therein
+(hereinafter referred to as the "Software"), to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is provided to do so, subject to the following
+conditions and limitations:
+
+1. Attribution:
+   - The above copyright notice, this extended license text, and any
+     associated disclaimers must be included in all copies, substantial
+     portions, or derivative works of the Software.
+   - Any public or private use, whether in digital products, websites, mobile
+     applications, or any other form, must retain proper attribution to the
+     original author, Abdeljalil Doua, and the project "Youkyouk".
+
+2. Scope of Permission:
+   - You are granted the right to use the Software for personal, educational,
+     commercial, research, or governmental purposes.
+   - You may modify, adapt, or create derivative works based on the Software,
+     provided that the above attribution is maintained.
+   - You may sublicense or sell the Software, in whole or in part, with or
+     without modifications, while maintaining the license and attribution.
+
+3. Restrictions and Limitations:
+   - The Software is provided "as is", without any warranty of any kind, either
+     expressed or implied, including but not limited to warranties of
+     merchantability, fitness for a particular purpose, or non-infringement.
+   - The author is not responsible for any direct, indirect, incidental,
+     consequential, or special damages, including but not limited to lost
+     profits, data loss, or operational failure, arising out of or in
+     connection with the use, modification, or distribution of the Software.
+   - Users are solely responsible for ensuring compliance with applicable
+     laws, regulations, and licensing requirements when using the Software.
+   - Any attempt to claim ownership, remove attribution, or bypass licensing
+     terms constitutes a violation of this License.
+
+4. Liability:
+   - The author, contributors, maintainers, or distributors of the Software
+     shall not be liable for any claims, damages, losses, or legal disputes
+     arising from the installation, deployment, use, misuse, or adaptation of
+     the Software.
+   - Users agree to indemnify and hold harmless the author and contributors
+     against any claims arising from their use of the Software.
+
+5. Integrity of the Original Work:
+   - While modifications and derivative works are allowed, users must not
+     misrepresent the Software as being officially endorsed by the original
+     author unless explicitly authorized.
+   - Redistributions in modified form must clearly indicate that the Software
+     has been modified, including the date and nature of the modifications.
+
+6. Support and Maintenance:
+   - The author is under no obligation to provide support, updates, patches,
+     or maintenance for the Software.
+   - Users are encouraged to contribute improvements, bug fixes, and
+     enhancements back to the community under the same license.
+
+7. Additional Terms:
+   - This License does not grant permission to use trademarks, service marks,
+     trade names, or logos associated with the Software without prior written
+     consent.
+   - Any use of the Software in a commercial product or service must comply
+     with this License and maintain proper credit to the original author.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND ALL WARRANTIES, CONDITIONS, AND
+REPRESENTATIONS, WHETHER EXPRESS OR IMPLIED, ARE DISCLAIMED. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE,
+ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+By using, copying, modifying, or distributing this Software, you acknowledge
+that you have read, understood, and agreed to all terms and conditions
+described in this extended MIT License.
