@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { User } from "./User";
-import { Trip } from "./Trip";
+import { Vehicle } from "./Vehicle";
 import { Module } from "./Module";
 
 @Entity()
@@ -8,18 +8,21 @@ export class Country {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: "varchar", length: 100 })
   name: string;
 
-  @Column()
-  language: string;
+  @Column({ type: "varchar", length: 10 })
+  currency: string;
 
-  @OneToMany(() => User, user => user.country)
+  @Column({ type: "varchar", length: 10 })
+  defaultLanguage: string;
+
+  @OneToMany(() => User, (user) => user.country)
   users: User[];
 
-  @OneToMany(() => Trip, trip => trip.country)
-  trips: Trip[];
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.country)
+  vehicles: Vehicle[];
 
-  @OneToMany(() => Module, module => module.country)
+  @OneToMany(() => Module, (module) => module.country)
   modules: Module[];
 }
