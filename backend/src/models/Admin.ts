@@ -1,26 +1,32 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Schema, model, Document } from "mongoose";
 
-/**
- * Admin entity represents an administrator in the YoKyok system.
- * Admins can be global or country-specific.
- */
-@Entity()
-export class Admin {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
-  @Column({ unique: true })
+export interface IAdmin extends Document {
+  name: string;
   email: string;
-
-  @Column()
+  phone: string;
   password: string;
-
-  @Column({ default: true })
-  isSuperAdmin: boolean; // true = global admin, false = country admin
+  roles: string[]; // e.g., global admin, country admin
+  country?: string; // optional if local admin
+  modules: string[]; // modules admin can control
+  language: string;
+  currency: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const adminSchema = new Schema<IAdmin>(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    roles: { type: [String], default: [] },
+    country: { type: String },
+    modules: { type: [String], default: [] },
+    language: { type: String, default: "en" },
+    currency: { type: String, default: "USD" },
+  },
+  { timestamps: true }
+);
+
+export const Admin = model<IAdmin>("Admin", adminSchema);
