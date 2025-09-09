@@ -18,7 +18,7 @@ export const Topbar: React.FC = () => {
         </select>
       </div>
       <div>
-        <span>Admin Role</span>
+        <span>Role: Admin</span>
       </div>
     </div>
   );
