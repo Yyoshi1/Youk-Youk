@@ -1,20 +1,18 @@
-import { Schema, model, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Module } from "./Module";
+import { Country } from "./Country";
 
-export interface IModuleSetting extends Document {
-  moduleId: string;
-  country?: string; // optional for country-specific setting
-  settings: Record<string, any>;
-  createdAt: Date;
-  updatedAt: Date;
+@Entity()
+export class ModuleSetting {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Module, (module) => module.settings)
+  module: Module;
+
+  @ManyToOne(() => Country, (country) => country.moduleSettings)
+  country: Country;
+
+  @Column({ default: true })
+  isActive: boolean;
 }
-
-const moduleSettingSchema = new Schema<IModuleSetting>(
-  {
-    moduleId: { type: Schema.Types.ObjectId, ref: "Module", required: true },
-    country: { type: String },
-    settings: { type: Schema.Types.Mixed, default: {} },
-  },
-  { timestamps: true }
-);
-
-export const ModuleSetting = model<IModuleSetting>("ModuleSetting", moduleSettingSchema);
