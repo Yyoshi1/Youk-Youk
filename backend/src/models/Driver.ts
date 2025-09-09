@@ -1,37 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { Country } from "./Country";
-import { Ride } from "./Ride";
-import { TransportMode } from "./TransportMode";
+import { Schema, model, Document } from "mongoose";
+import { AccountType } from "./User";
 
-/**
- * Driver entity represents a driver in the YoKyok system.
- * - Can manage multiple vehicles
- * - Can accept rides (VIP, shared, economic, delivery)
- * - Dynamic pricing applies to their rides
- */
-@Entity()
-export class Driver {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
-
-  @ManyToOne(() => Country, (country) => country.drivers)
-  country: Country;
-
-  @OneToMany(() => Ride, (ride) => ride.driver)
-  rides: Ride[];
-
-  @OneToMany(() => TransportMode, (transport) => transport.driver)
-  vehicles: TransportMode[];
+export interface IDriver extends Document {
+  userId: string;
+  vehicles: string[]; // vehicle IDs
+  trips: string[]; // trip IDs
+  ratings: number;
+  earnings: number;
+  active: boolean;
+  modules: string[];
+  language: string;
+  currency: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const driverSchema = new Schema<IDriver>(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    vehicles: { type: [String], default: [] },
+    trips: { type: [String], default: [] },
+    ratings: { type: Number, default: 0 },
+    earnings: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
+    modules: { type: [String], default: [] },
+    language: { type: String, default: "en" },
+    currency: { type: String, default: "USD" },
+  },
+  { timestamps: true }
+);
+
+export const Driver = model<IDriver>("Driver", driverSchema);
