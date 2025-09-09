@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { User } from "./User";
-import { Vehicle } from "./Vehicle";
 import { Module } from "./Module";
+import { Ride } from "./Ride";
 
 @Entity()
 export class Country {
@@ -17,12 +16,9 @@ export class Country {
   @Column({ type: "varchar", length: 10 })
   defaultLanguage: string;
 
-  @OneToMany(() => User, (user) => user.country)
-  users: User[];
-
-  @OneToMany(() => Vehicle, (vehicle) => vehicle.country)
-  vehicles: Vehicle[];
-
   @OneToMany(() => Module, (module) => module.country)
   modules: Module[];
+
+  @OneToMany(() => Ride, (ride) => ride.country)
+  rides: Ride[];
 }
