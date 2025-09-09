@@ -1,21 +1,37 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Trip } from "./Trip";
-import { Vehicle } from "./Vehicle";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import { Country } from "./Country";
+import { Ride } from "./Ride";
+import { TransportMode } from "./TransportMode";
 
+/**
+ * Driver entity represents a driver in the YoKyok system.
+ * - Can manage multiple vehicles
+ * - Can accept rides (VIP, shared, economic, delivery)
+ * - Dynamic pricing applies to their rides
+ */
 @Entity()
 export class Driver {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @Column({ unique: true })
   email: string;
 
-  @OneToMany(() => Trip, (trip) => trip.driver)
-  trips: Trip[];
+  @Column()
+  password: string;
 
-  @OneToMany(() => Vehicle, (vehicle) => vehicle.driver)
-  vehicles: Vehicle[];
+  @ManyToOne(() => Country, (country) => country.drivers)
+  country: Country;
+
+  @OneToMany(() => Ride, (ride) => ride.driver)
+  rides: Ride[];
+
+  @OneToMany(() => TransportMode, (transport) => transport.driver)
+  vehicles: TransportMode[];
 }
