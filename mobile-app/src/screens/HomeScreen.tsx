@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput, ScrollView, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput, ScrollView, Image } from "react-native";
 import MapView, { Marker, MapEvent } from "react-native-maps";
 
 type Location = {
@@ -11,7 +11,7 @@ type Location = {
 type VehicleType = {
   id: string;
   name: string;
-  icon: string; // icon URL or local path
+  image: any; // path to image or require
   price: number;
 };
 
@@ -22,19 +22,19 @@ const mockHistory = [
   { name: "Shopping Center" },
 ];
 
-// Mock vehicle types
+// Mock vehicle types with images
 const vehicleTypes: VehicleType[] = [
-  { id: "ride", name: "Ride", icon: "🚗", price: 10 },
-  { id: "comfort", name: "Comfort", icon: "🚙", price: 15 },
-  { id: "bike", name: "Bike", icon: "🏍️", price: 5 },
-  { id: "youkyouk", name: "Youkyouk Taxi", icon: "🚕", price: 12 },
-  { id: "travel", name: "Travel", icon: "🚐", price: 20 },
-  { id: "shipping", name: "Shipping", icon: "🚚", price: 25 },
-  { id: "company", name: "Transport Company", icon: "🚛", price: 30 },
+  { id: "ride", name: "Ride", image: require("../../assets/vehicles/ride.png"), price: 10 },
+  { id: "comfort", name: "Comfort", image: require("../../assets/vehicles/comfort.png"), price: 15 },
+  { id: "bike", name: "Bike", image: require("../../assets/vehicles/bike.png"), price: 5 },
+  { id: "youkyouk", name: "Youkyouk Taxi", image: require("../../assets/vehicles/youkyouk.png"), price: 12 },
+  { id: "travel", name: "Travel", image: require("../../assets/vehicles/travel.png"), price: 20 },
+  { id: "shipping", name: "Shipping", image: require("../../assets/vehicles/shipping.png"), price: 25 },
+  { id: "company", name: "Transport Company", image: require("../../assets/vehicles/company.png"), price: 30 },
 ];
 
 // Services Grid
-const services = vehicleTypes.map((v) => ({ id: v.id, name: v.name, icon: v.icon }));
+const services = vehicleTypes.map((v) => ({ id: v.id, name: v.name, image: v.image }));
 
 interface DestinationOverlayProps {
   visible: boolean;
@@ -169,7 +169,7 @@ const HomeScreen: React.FC = () => {
       <View style={styles.servicesContainer}>
         {services.map((s) => (
           <TouchableOpacity key={s.id} style={styles.serviceItem}>
-            <Text style={styles.serviceIcon}>{s.icon}</Text>
+            <Image source={s.image} style={styles.serviceImage} resizeMode="contain" />
             <Text style={styles.serviceText}>{s.name}</Text>
           </TouchableOpacity>
         ))}
@@ -184,7 +184,7 @@ const HomeScreen: React.FC = () => {
               style={[styles.vehicleItem, selectedVehicle.id === v.id && styles.selectedVehicle]}
               onPress={() => setSelectedVehicle(v)}
             >
-              <Text style={styles.vehicleIcon}>{v.icon}</Text>
+              <Image source={v.image} style={styles.vehicleImage} resizeMode="contain" />
               <Text style={styles.vehicleText}>{v.name}</Text>
               <Text style={styles.vehiclePrice}>${v.price}</Text>
             </TouchableOpacity>
@@ -231,73 +231,3 @@ const styles = StyleSheet.create({
   },
   serviceItem: {
     width: 80,
-    height: 80,
-    backgroundColor: "#fff",
-    margin: 5,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  serviceIcon: {
-    fontSize: 24,
-    marginBottom: 4,
-  },
-  serviceText: {
-    fontSize: 12,
-    textAlign: "center",
-  },
-  vehicleScrollContainer: {
-    position: "absolute",
-    bottom: 80,
-    width: "100%",
-    paddingHorizontal: 10,
-  },
-  vehicleItem: {
-    width: 100,
-    backgroundColor: "#fff",
-    marginRight: 10,
-    borderRadius: 10,
-    padding: 10,
-    alignItems: "center",
-  },
-  selectedVehicle: {
-    borderWidth: 2,
-    borderColor: "#007AFF",
-  },
-  vehicleIcon: { fontSize: 24, marginBottom: 4 },
-  vehicleText: { fontSize: 12 },
-  vehiclePrice: { fontSize: 12, fontWeight: "600" },
-  destinationInput: {
-    position: "absolute",
-    bottom: 10,
-    width: "90%",
-    alignSelf: "center",
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 10,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
-  map: { flex: 1 },
-  container: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    padding: 16,
-    maxHeight: "90%",
-  },
-  label: { fontSize: 14, marginBottom: 8, fontWeight: "600" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 8, marginBottom: 12 },
-  activeInput: { borderColor: "#007AFF", borderWidth: 2 },
-  historyItem: { padding: 8, backgroundColor: "#eee", borderRadius: 8, marginRight: 8 },
-  buttons: { flexDirection: "row", justifyContent: "space-between", marginTop: 16 },
-  confirmButton: { backgroundColor: "#007AFF", padding: 12, borderRadius: 8, flex: 1, marginRight: 8 },
-  confirmText: { color: "#fff", textAlign: "center", fontWeight: "600" },
-  cancelButton: { backgroundColor: "#ccc", padding: 12, borderRadius: 8, flex: 1 },
-  cancelText: { color: "#000", textAlign: "center", fontWeight: "600" },
-});
