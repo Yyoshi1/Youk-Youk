@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Driver } from "./Driver";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Vehicle {
@@ -7,11 +6,20 @@ export class Vehicle {
   id: number;
 
   @Column()
-  type: "car" | "small_truck" | "large_truck" | "electric_bike";
+  type: string; // : Car, Bike, Truck
 
   @Column()
-  plateNumber: string;
+  name: string;
 
-  @ManyToOne(() => Driver, (driver) => driver.vehicles)
-  driver: Driver;
+  @Column({ nullable: true })
+  imageUrl: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
