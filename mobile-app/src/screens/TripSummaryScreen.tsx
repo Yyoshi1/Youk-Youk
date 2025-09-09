@@ -1,88 +1,85 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 
 // 
-type VehicleType = {
+type Vehicle = {
   id: string;
   name: string;
-  image: any; // 
-  basePrice: number; // 
+  image: any; // Image require
+  basePrice: number;
 };
 
 // 
-const vehicles: VehicleType[] = [
-  { id: "ride", name: "Ride", image: require("../assets/ride.png"), basePrice: 5 },
-  { id: "comfort", name: "Comfort", image: require("../assets/comfort.png"), basePrice: 8 },
-  { id: "bike", name: "Bike", image: require("../assets/bike.png"), basePrice: 3 },
-  { id: "youkyouk", name: "Youkyouk", image: require("../assets/youkyouk.png"), basePrice: 10 },
-  { id: "travel", name: "Travel", image: require("../assets/travel.png"), basePrice: 15 },
-  { id: "shipping", name: "Shipping", image: require("../assets/shipping.png"), basePrice: 12 },
-  { id: "company", name: "Company", image: require("../assets/company.png"), basePrice: 20 },
+const services = ["Ride", "Comfort", "Bike", "Taxi", "Travel", "Shipping", "VIP", "Shared"];
+
+// 
+const mockVehicles: Vehicle[] = [
+  { id: "1", name: "Ride", image: require("../assets/vehicles/ride.png"), basePrice: 5 },
+  { id: "2", name: "Comfort", image: require("../assets/vehicles/comfort.png"), basePrice: 8 },
+  { id: "3", name: "Bike", image: require("../assets/vehicles/bike.png"), basePrice: 3 },
+  { id: "4", name: "Taxi", image: require("../assets/vehicles/taxi.png"), basePrice: 6 },
+  { id: "5", name: "Travel", image: require("../assets/vehicles/travel.png"), basePrice: 10 },
+  { id: "6", name: "Shipping", image: require("../assets/vehicles/shipping.png"), basePrice: 12 },
 ];
 
 const TripSummaryScreen: React.FC = () => {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { fromLocation, toLocation } = (route.params as any);
+  const [selectedService, setSelectedService] = useState<string>("Ride");
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(mockVehicles[0]);
+  const [currentPrice, setCurrentPrice] = useState<number>(mockVehicles[0].basePrice);
 
-  const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>(vehicles[0]);
-  const [price, setPrice] = useState<number>(selectedVehicle.basePrice);
-
-  const handlePriceChange = (amount: number) => {
-    const newPrice = price + amount;
-    if (newPrice >= 0) setPrice(newPrice);
+  // عند تغيير المركبة
+  const handleVehicleSelect = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setCurrentPrice(vehicle.basePrice);
   };
 
-  const handleConfirmTrip = () => {
-    // 
-    navigation.navigate("Home");
-  };
+  // تعديل السعر يدويًا
+  const incrementPrice = () => setCurrentPrice(currentPrice + 1);
+  const decrementPrice = () => currentPrice > 0 && setCurrentPrice(currentPrice - 1);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Trip Summary</Text>
-      <Text style={styles.locationText}>From: {fromLocation.name}</Text>
-      <Text style={styles.locationText}>To: {toLocation.name}</Text>
+      {/* Header */}
+      <Text style={styles.header}>Trip Summary - {selectedService}</Text>
 
-      <View style={styles.selectedVehicle}>
+      {/* Selected Vehicle */}
+      <View style={styles.selectedVehicleContainer}>
         <Image source={selectedVehicle.image} style={styles.vehicleImage} />
         <Text style={styles.vehicleName}>{selectedVehicle.name}</Text>
-        <Text style={styles.vehiclePrice}>${price.toFixed(2)}</Text>
-        <View style={styles.priceControls}>
-          <TouchableOpacity onPress={() => handlePriceChange(-1)} style={styles.priceButton}>
-            <Text style={styles.priceButtonText}>−</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handlePriceChange(1)} style={styles.priceButton}>
-            <Text style={styles.priceButtonText}>+</Text>
-          </TouchableOpacity>
+        <View style={styles.priceContainer}>
+          <TouchableOpacity onPress={decrementPrice} style={styles.priceButton}><Text>-</Text></TouchableOpacity>
+          <Text style={styles.priceText}>{currentPrice} $</Text>
+          <TouchableOpacity onPress={incrementPrice} style={styles.priceButton}><Text>+</Text></TouchableOpacity>
         </View>
       </View>
 
-      <Text style={styles.otherVehiclesLabel}>Other Vehicles:</Text>
+      {/* Vehicles List */}
       <FlatList
-        data={vehicles.filter((v) => v.id !== selectedVehicle.id)}
         horizontal
+        data={mockVehicles}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.vehicleItem}
-            onPress={() => {
-              setSelectedVehicle(item);
-              setPrice(item.basePrice);
-            }}
-          >
-            <Image source={item.image} style={styles.vehicleItemImage} />
-            <Text style={styles.vehicleItemName}>{item.name}</Text>
-            <Text style={styles.vehicleItemPrice}>${item.basePrice.toFixed(2)}</Text>
+          <TouchableOpacity onPress={() => handleVehicleSelect(item)} style={[styles.vehicleItem, item.id === selectedVehicle.id && styles.selectedItem]}>
+            <Image source={item.image} style={styles.vehicleImageSmall} />
+            <Text style={styles.vehicleNameSmall}>{item.name}</Text>
+            <Text style={styles.priceSmall}>{item.basePrice} $</Text>
           </TouchableOpacity>
         )}
-        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.vehicleList}
       />
 
-      <TouchableOpacity onPress={handleConfirmTrip} style={styles.confirmButton}>
-        <Text style={styles.confirmText}>Confirm Trip</Text>
-      </TouchableOpacity>
+      {/* Services Tabs */}
+      <FlatList
+        horizontal
+        data={services}
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => setSelectedService(item)} style={[styles.serviceTab, item === selectedService && styles.activeService]}>
+            <Text style={styles.serviceText}>{item}</Text>
+          </TouchableOpacity>
+        )}
+        contentContainerStyle={styles.servicesList}
+      />
     </View>
   );
 };
@@ -91,44 +88,21 @@ export default TripSummaryScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#fff" },
-  header: { fontSize: 24, fontWeight: "700", marginBottom: 12 },
-  locationText: { fontSize: 16, marginBottom: 4 },
-  selectedVehicle: {
-    alignItems: "center",
-    marginVertical: 16,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 12,
-  },
-  vehicleImage: { width: 100, height: 60, resizeMode: "cover", marginBottom: 8 },
-  vehicleName: { fontSize: 16, fontWeight: "600" },
-  vehiclePrice: { fontSize: 18, fontWeight: "700", marginVertical: 8 },
-  priceControls: { flexDirection: "row", gap: 12 },
-  priceButton: {
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  priceButtonText: { color: "#fff", fontSize: 18, fontWeight: "700" },
-  otherVehiclesLabel: { fontSize: 16, fontWeight: "600", marginVertical: 12 },
-  vehicleItem: {
-    alignItems: "center",
-    marginRight: 12,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 12,
-  },
-  vehicleItemImage: { width: 60, height: 40, resizeMode: "cover", marginBottom: 4 },
-  vehicleItemName: { fontSize: 12 },
-  vehicleItemPrice: { fontSize: 12, fontWeight: "600" },
-  confirmButton: {
-    marginTop: 24,
-    backgroundColor: "#007AFF",
-    padding: 16,
-    borderRadius: 12,
-  },
-  confirmText: { color: "#fff", textAlign: "center", fontWeight: "700", fontSize: 16 },
+  header: { fontSize: 20, fontWeight: "700", marginBottom: 16 },
+  selectedVehicleContainer: { alignItems: "center", marginBottom: 24 },
+  vehicleImage: { width: 120, height: 80, resizeMode: "contain" },
+  vehicleName: { fontSize: 16, fontWeight: "600", marginTop: 8 },
+  priceContainer: { flexDirection: "row", alignItems: "center", marginTop: 8 },
+  priceButton: { padding: 8, backgroundColor: "#eee", borderRadius: 4, marginHorizontal: 8 },
+  priceText: { fontSize: 16, fontWeight: "600" },
+  vehicleList: { paddingVertical: 8 },
+  vehicleItem: { alignItems: "center", marginRight: 16 },
+  selectedItem: { borderWidth: 2, borderColor: "#007AFF", borderRadius: 8, padding: 4 },
+  vehicleImageSmall: { width: 60, height: 40, resizeMode: "contain" },
+  vehicleNameSmall: { fontSize: 12, fontWeight: "500", marginTop: 4 },
+  priceSmall: { fontSize: 12, fontWeight: "500", marginTop: 2 },
+  servicesList: { paddingVertical: 8, marginTop: 16 },
+  serviceTab: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: "#eee", borderRadius: 16, marginRight: 8 },
+  activeService: { backgroundColor: "#007AFF" },
+  serviceText: { color: "#000", fontWeight: "600" },
 });
