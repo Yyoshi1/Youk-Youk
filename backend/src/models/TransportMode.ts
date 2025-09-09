@@ -1,25 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { Driver } from "./Driver";
-import { Ride } from "./Ride";
+import { Schema, model, Document } from "mongoose";
 
-/**
- * TransportMode entity represents a vehicle or transport type.
- * - Examples: car, small truck, large truck, electric bike
- */
-@Entity()
-export class TransportMode {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  type: string; // car, small truck, large truck, electric bike
-
-  @Column()
-  imageUrl: string; // vehicle image
-
-  @ManyToOne(() => Driver, (driver) => driver.vehicles)
-  driver: Driver;
-
-  @OneToMany(() => Ride, (ride) => ride.transportMode)
-  rides: Ride[];
+export interface ITransportMode extends Document {
+  name: string; // car, bike, truck, etc
+  imageUrl: string;
+  capacity: number;
+  baseFare: number;
+  perKmFare: number;
+  modulesApplicable: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const transportModeSchema = new Schema<ITransportMode>(
+  {
+    name: { type: String, required: true },
+    imageUrl: { type: String },
+    capacity: { type: Number, default: 1 },
+    baseFare: { type: Number, default: 0 },
+    perKmFare: { type: Number, default: 0 },
+    modulesApplicable: { type: [String], default: [] },
+  },
+  { timestamps: true }
+);
+
+export const TransportMode = model<ITransportMode>("TransportMode", transportModeSchema);
