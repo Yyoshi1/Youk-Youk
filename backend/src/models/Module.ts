@@ -1,23 +1,22 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Country } from "./Country";
 
+/**
+ * Module entity represents an optional feature in the YoKyok system.
+ * - Can be enabled or disabled per country
+ * Examples: VIP, Shared rides, Dynamic Pricing, AI Assistant, etc.
+ */
 @Entity()
 export class Module {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 100 })
+  @Column()
   name: string;
 
-  @Column({ type: "text", nullable: true })
-  description: string;
+  @Column({ default: true })
+  isActive: boolean;
 
-  @Column({ type: "boolean", default: true })
-  isActiveGlobally: boolean;
-
-  @Column({ type: "boolean", default: false })
-  isActiveForCountry: boolean;
-
-  @ManyToOne(() => Country, (country) => country.modules, { nullable: true })
-  country: Country | null;
+  @ManyToOne(() => Country, (country) => country.modules)
+  country: Country;
 }
