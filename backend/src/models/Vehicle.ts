@@ -1,31 +1,36 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 import { User } from "./User";
 import { Ride } from "./Ride";
+import { Country } from "./Country";
+
+export type VehicleType = "car" | "small_truck" | "big_truck" | "electric_bike";
 
 @Entity()
 export class Vehicle {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 100 })
+  @Column({ type: "varchar", length: 50 })
   name: string;
 
-  @Column({ type: "varchar", length: 50 })
-  type: string; // car, small_truck, big_truck, e-bike
+  @Column({ type: "enum", enum: ["car", "small_truck", "big_truck", "electric_bike"] })
+  type: VehicleType;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 200, nullable: true })
   imageUrl: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "ownerId" })
+  @ManyToOne(() => User, { eager: true })
   owner: User;
+
+  @ManyToOne(() => Country)
+  country: Country;
 
   @OneToMany(() => Ride, (ride) => ride.vehicle)
   rides: Ride[];
 
-  @Column({ type: "boolean", default: true })
-  isActive: boolean;
+  @Column({ type: "float", default: 0 })
+  basePrice: number;
 
-  @Column({ type: "decimal", precision: 5, scale: 2, default: 1.0 })
-  multiplier: number; // multiplier for dynamic pricing
+  @Column({ type: "boolean", default: true })
+  active: boolean;
 }
