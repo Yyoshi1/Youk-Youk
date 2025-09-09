@@ -1,30 +1,27 @@
 import { Schema, model, Document } from "mongoose";
 
-// Account types
 export enum AccountType {
   PASSENGER = "passenger",
   DRIVER = "driver",
   ADMIN = "admin",
 }
 
-// User interface
 export interface IUser extends Document {
   name: string;
   email: string;
   phone: string;
   password: string;
   accountType: AccountType;
-  country: string; // ISO country code
-  roles: string[]; // e.g., local admin, global admin
-  modules: string[]; // enabled modules for this user
-  language: string; // default language
-  currency: string; // local currency
+  country: string;
+  roles: string[];
+  modules: string[];
+  language: string;
+  currency: string;
   profileCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// User schema
 const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
