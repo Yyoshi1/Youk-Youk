@@ -1,24 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
-
-export type ModuleStatus = "active" | "inactive";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
+import { Vehicle } from "./Vehicle";
 
 @Entity()
 export class Module {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
-  @Column({ type: "text", nullable: true })
-  description: string;
+  @Column({ default: true })
+  isActive: boolean;
 
-  @Column({ type: "enum", enum: ["active", "inactive"], default: "inactive" })
-  status: ModuleStatus;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @ManyToMany(() => Vehicle)
+  @JoinTable()
+  vehicles: Vehicle[];
 }
