@@ -1,37 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./User";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Ride } from "./Ride";
 
-export type TripStatus = "pending" | "in_progress" | "completed" | "cancelled";
-
+/**
+ * Trip entity represents a specific instance of a ride.
+ * - Can have startTime, endTime, additional notes
+ */
 @Entity()
 export class Trip {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
-  passenger: User;
+  @ManyToOne(() => Ride)
+  ride: Ride;
 
-  @ManyToOne(() => User, { nullable: true })
-  driver: User | null;
+  @Column({ type: "timestamp", nullable: true })
+  startTime: Date;
 
-  @Column()
-  fromLocation: string;
-
-  @Column()
-  toLocation: string;
-
-  @Column({ type: "float" })
-  price: number;
-
-  @Column({ type: "enum", enum: ["pending", "in_progress", "completed", "cancelled"], default: "pending" })
-  status: TripStatus;
+  @Column({ type: "timestamp", nullable: true })
+  endTime: Date;
 
   @Column({ nullable: true })
-  vehicleType: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  notes: string;
 }
