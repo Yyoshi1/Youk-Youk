@@ -1,47 +1,42 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { User } from "./User";
-import { Module } from "./Module";
 import { Vehicle } from "./Vehicle";
+import { Country } from "./Country";
+
+export type RideStatus = "pending" | "accepted" | "in_progress" | "completed" | "cancelled";
 
 @Entity()
 export class Ride {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "passengerId" })
+  @ManyToOne(() => User, { eager: true })
   passenger: User;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "driverId" })
+  @ManyToOne(() => User, { eager: true })
   driver: User;
 
-  @ManyToOne(() => Vehicle)
-  @JoinColumn({ name: "vehicleId" })
+  @ManyToOne(() => Vehicle, { eager: true })
   vehicle: Vehicle;
 
-  @ManyToOne(() => Module)
-  @JoinColumn({ name: "moduleId" })
-  module: Module;
-
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  basePrice: number;
-
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  finalPrice: number;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 100 })
   fromLocation: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 100 })
   toLocation: string;
+
+  @Column({ type: "float", default: 0 })
+  price: number;
+
+  @Column({ type: "enum", enum: ["pending", "accepted", "in_progress", "completed", "cancelled"], default: "pending" })
+  status: RideStatus;
+
+  @ManyToOne(() => Country)
+  country: Country;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
 
   @Column({ type: "timestamp", nullable: true })
-  completedAt: Date;
-
-  @Column({ default: false })
-  isCompleted: boolean;
+  updatedAt: Date;
 }
