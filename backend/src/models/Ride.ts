@@ -3,45 +3,35 @@ import { User } from "./User";
 import { Vehicle } from "./Vehicle";
 import { Country } from "./Country";
 
-export enum RideStatus {
-  PENDING = "pending",
-  ONGOING = "ongoing",
-  COMPLETED = "completed",
-  CANCELLED = "cancelled",
-}
-
 @Entity()
 export class Ride {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.ridesAsPassenger)
+  @ManyToOne(() => User, (user) => user.rides)
   passenger: User;
 
-  @ManyToOne(() => User, (user) => user.ridesAsDriver)
+  @ManyToOne(() => User, (user) => user.rides)
   driver: User;
 
   @ManyToOne(() => Vehicle, (vehicle) => vehicle.rides)
   vehicle: Vehicle;
 
-  @ManyToOne(() => Country, (country) => country.id)
+  @ManyToOne(() => Country, (country) => country.rides)
   country: Country;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 200 })
   fromLocation: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 200 })
   toLocation: string;
 
-  @Column({ type: "enum", enum: RideStatus, default: RideStatus.PENDING })
-  status: RideStatus;
-
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "float", default: 0 })
   price: number;
+
+  @Column({ type: "varchar", length: 50, default: "pending" })
+  status: string; // pending, ongoing, completed, cancelled
 
   @CreateDateColumn()
   createdAt: Date;
-
-  @Column({ type: "timestamp", nullable: true })
-  completedAt: Date;
 }
