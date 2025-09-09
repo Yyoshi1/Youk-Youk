@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================
-# سكربت تثبيت كامل لمشروع Youkyouk
+# سكربت تثبيت كامل لمشروع Youkyouk مع Demo Data وMulti-Country
 # ==========================
 
 echo "بدء التثبيت..."
@@ -38,6 +38,10 @@ echo "إعداد Backend..."
 cd youkyouk/backend
 npm install
 npx typeorm migration:run
+
+# تهيئة Multi-Country + Demo Data
+echo "تهيئة Demo Data + Multi-Country..."
+npx ts-node src/seeders/initDemoData.ts
 cd ../../
 
 # 7️⃣ Admin Dashboard setup
@@ -78,7 +82,7 @@ cd youkyouk/frontend/landing
 yarn start &
 cd ../../
 
-echo "✅ التثبيت اكتمل! كل المكونات تعمل الآن."
+echo "✅ التثبيت والاستخدام التجريبي اكتمل!"
 echo "Backend: http://localhost:4000"
 echo "Admin Dashboard: http://localhost:3000"
 echo "Landing Page: http://localhost:3001"
