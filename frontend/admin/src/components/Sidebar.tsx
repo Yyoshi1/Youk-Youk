@@ -9,6 +9,7 @@ export const Sidebar: React.FC = () => {
         <NavLink className="p-4 hover:bg-gray-700" to="/countries">Countries</NavLink>
         <NavLink className="p-4 hover:bg-gray-700" to="/users-trips">Users & Trips</NavLink>
         <NavLink className="p-4 hover:bg-gray-700" to="/modules">Modules</NavLink>
+        <NavLink className="p-4 hover:bg-gray-700" to="/transport-modes">Transport Modes</NavLink>
         <NavLink className="p-4 hover:bg-gray-700" to="/analytics">Analytics</NavLink>
         <NavLink className="p-4 hover:bg-gray-700" to="/settings">Settings</NavLink>
       </nav>
