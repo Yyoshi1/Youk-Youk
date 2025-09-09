@@ -1,24 +1,28 @@
-import { Schema, model, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { User } from "./User";
+import { Driver } from "./Driver";
+import { ModuleSetting } from "./ModuleSetting";
 
-export interface ICountry extends Document {
+@Entity()
+export class Country {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
   name: string;
-  isoCode: string;
+
+  @Column()
   defaultLanguage: string;
-  defaultCurrency: string;
-  enabledModules: string[]; // modules activated for this country
-  createdAt: Date;
-  updatedAt: Date;
+
+  @Column()
+  currency: string;
+
+  @OneToMany(() => User, (user) => user.countryId)
+  users: User[];
+
+  @OneToMany(() => Driver, (driver) => driver.countryId)
+  drivers: Driver[];
+
+  @OneToMany(() => ModuleSetting, (setting) => setting.country)
+  moduleSettings: ModuleSetting[];
 }
-
-const countrySchema = new Schema<ICountry>(
-  {
-    name: { type: String, required: true },
-    isoCode: { type: String, required: true, unique: true },
-    defaultLanguage: { type: String, default: "en" },
-    defaultCurrency: { type: String, default: "USD" },
-    enabledModules: { type: [String], default: [] },
-  },
-  { timestamps: true }
-);
-
-export const Country = model<ICountry>("Country", countrySchema);
