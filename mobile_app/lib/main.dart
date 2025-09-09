@@ -1,26 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'providers/modules_provider.dart';
-import 'providers/role_provider.dart';
-import 'widgets/role_switcher.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'models/user.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => ModulesProvider()),
-      ChangeNotifierProvider(create: (_) => RoleProvider()),
-    ],
-    child: TripsApp(),
-  ));
+  runApp(YoukyoukApp());
 }
 
-class TripsApp extends StatelessWidget {
+class YoukyoukApp extends StatefulWidget {
+  @override
+  _YoukyoukAppState createState() => _YoukyoukAppState();
+}
+
+class _YoukyoukAppState extends State<YoukyoukApp> {
+  User? currentUser;
+  String currentRole = "Passenger"; // الافتراضي راكب
+
+  void switchRole(String role) {
+    setState(() {
+      currentRole = role;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TripsApp',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: RoleSwitcher(),
+      title: 'Youkyouk',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: currentUser == null
+          ? LoginScreen(onLogin: (user) {
+              setState(() {
+                currentUser = user;
+              });
+            })
+          : HomeScreen(
+              user: currentUser!,
+              role: currentRole,
+              onSwitchRole: switchRole,
+            ),
     );
   }
 }
