@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Ride } from "./Ride";
+
+export enum VehicleType {
+  CAR = "car",
+  SMALL_TRUCK = "small_truck",
+  LARGE_TRUCK = "large_truck",
+  ELECTRIC_BIKE = "electric_bike",
+}
 
 @Entity()
 export class Vehicle {
@@ -6,20 +14,21 @@ export class Vehicle {
   id: number;
 
   @Column()
-  type: string; // : Car, Bike, Truck
-
-  @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({
+    type: "enum",
+    enum: VehicleType,
+    default: VehicleType.CAR,
+  })
+  type: VehicleType;
+
+  @Column()
   imageUrl: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column("decimal", { precision: 10, scale: 2, default: 0 })
+  basePrice: number;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @OneToMany(() => Ride, (ride) => ride.vehicle)
+  rides: Ride[];
 }
