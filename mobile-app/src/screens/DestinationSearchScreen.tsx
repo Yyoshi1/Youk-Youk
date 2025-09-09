@@ -1,56 +1,54 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
 import MapView, { Marker, MapEvent } from "react-native-maps";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-// 
 type Location = {
   latitude: number;
   longitude: number;
   name: string;
 };
 
-// 
 const mockHistory = [
-  { name: "Airport", latitude: 37.615223, longitude: -122.389977 },
-  { name: "Hotel", latitude: 37.790841, longitude: -122.401042 },
-  { name: "Mall", latitude: 37.784173, longitude: -122.407195 },
+  { name: "Airport" },
+  { name: "Hotel" },
+  { name: "Shopping Mall" },
 ];
 
 const DestinationSearchScreen: React.FC = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const userLocation: Location = (route.params as any).userLocation;
+  const route = useRoute<any>();
+  const { fromLocation, toLocation: initialToLocation } = route.params;
 
-  const [fromLocation, setFromLocation] = useState<Location>(userLocation);
-  const [toLocation, setToLocation] = useState<Location>({ latitude: 0, longitude: 0, name: "" });
-  const [activeField, setActiveField] = useState<"from" | "to">("from");
+  const [fromLocation, setFromLocation] = useState<Location>(fromLocation);
+  const [toLocation, setToLocation] = useState<Location>(initialToLocation || { latitude: 0, longitude: 0, name: "" });
+  const [activeField, setActiveField] = useState<"from" | "to">("to");
 
   const handleMapPress = (e: MapEvent) => {
     const coords = e.nativeEvent.coordinate;
     if (activeField === "from") {
-      setFromLocation({ latitude: coords.latitude, longitude: coords.longitude, name: `Manual (${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)})` });
+      setFromLocation({ ...fromLocation, latitude: coords.latitude, longitude: coords.longitude });
     } else {
-      setToLocation({ latitude: coords.latitude, longitude: coords.longitude, name: `Manual (${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)})` });
+      setToLocation({ ...toLocation, latitude: coords.latitude, longitude: coords.longitude });
     }
   };
 
-  const handleHistorySelect = (location: Location) => {
-    if (activeField === "from") setFromLocation(location);
-    else setToLocation(location);
+  const handleHistorySelect = (locationName: string) => {
+    if (activeField === "from") setFromLocation({ ...fromLocation, name: locationName });
+    else setToLocation({ ...toLocation, name: locationName });
   };
 
   const handleConfirm = () => {
-    navigation.navigate("TripSummary", { fromLocation, toLocation });
+    navigation.navigate("TripSummaryScreen", { fromLocation, toLocation });
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <MapView
-        style={styles.map}
+        style={{ flex: 1 }}
         initialRegion={{
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
+          latitude: fromLocation.latitude,
+          longitude: fromLocation.longitude,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
@@ -62,24 +60,31 @@ const DestinationSearchScreen: React.FC = () => {
 
       <View style={styles.overlay}>
         <TouchableOpacity onPress={() => setActiveField("from")} style={[styles.input, activeField === "from" && styles.activeInput]}>
-          <TextInput value={fromLocation.name} onChangeText={(text) => setFromLocation({ ...fromLocation, name: text })} placeholder="Current Location" />
+          <TextInput
+            value={fromLocation.name}
+            onChangeText={(text) => setFromLocation({ ...fromLocation, name: text })}
+            placeholder="Current Location"
+          />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setActiveField("to")} style={[styles.input, activeField === "to" && styles.activeInput]}>
-          <TextInput value={toLocation.name} onChangeText={(text) => setToLocation({ ...toLocation, name: text })} placeholder="Destination" />
+          <TextInput
+            value={toLocation.name}
+            onChangeText={(text) => setToLocation({ ...toLocation, name: text })}
+            placeholder="Destination"
+          />
         </TouchableOpacity>
 
-        <Text style={styles.label}>Previous Locations:</Text>
+        <Text style={styles.label}>Previous Searches:</Text>
         <FlatList
           data={mockHistory}
           horizontal
           keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleHistorySelect(item)} style={styles.historyItem}>
+            <TouchableOpacity onPress={() => handleHistorySelect(item.name)} style={styles.historyItem}>
               <Text>{item.name}</Text>
             </TouchableOpacity>
           )}
-          showsHorizontalScrollIndicator={false}
         />
 
         <TouchableOpacity onPress={handleConfirm} style={styles.confirmButton}>
@@ -93,8 +98,6 @@ const DestinationSearchScreen: React.FC = () => {
 export default DestinationSearchScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
   overlay: {
     position: "absolute",
     bottom: 0,
@@ -103,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    padding: 12,
+    padding: 16,
   },
   input: {
     borderWidth: 1,
@@ -116,7 +119,11 @@ const styles = StyleSheet.create({
     borderColor: "#007AFF",
     borderWidth: 2,
   },
-  label: { fontSize: 14, fontWeight: "600", marginBottom: 8 },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
   historyItem: {
     padding: 8,
     backgroundColor: "#eee",
@@ -126,8 +133,12 @@ const styles = StyleSheet.create({
   confirmButton: {
     backgroundColor: "#007AFF",
     padding: 12,
-    borderRadius: 12,
-    marginTop: 12,
+    borderRadius: 8,
+    marginTop: 16,
+    alignItems: "center",
   },
-  confirmText: { color: "#fff", textAlign: "center", fontWeight: "600" },
+  confirmText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
 });
