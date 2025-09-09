@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
+import DestinationOverlay from "../components/DestinationOverlay";
 
 // 
-type ServiceType = {
-  id: string;
-  name: string;
-  image: string; // path to vehicle image
-};
-
-const services: ServiceType[] = [
+const services = [
   { id: "ride", name: "Ride", image: require("../assets/ride.png") },
   { id: "comfort", name: "Comfort", image: require("../assets/comfort.png") },
   { id: "bike", name: "Bike", image: require("../assets/bike.png") },
@@ -21,17 +16,19 @@ const services: ServiceType[] = [
 ];
 
 const HomeScreen: React.FC = () => {
-  const [userLocation, setUserLocation] = useState({ latitude: 37.78825, longitude: -122.4324 });
   const navigation = useNavigation();
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [userLocation, setUserLocation] = useState({ latitude: 37.78825, longitude: -122.4324, name: "" });
 
-  const handleSearchPress = () => {
-    navigation.navigate("DestinationSearch", { userLocation });
+  const handleConfirmDestination = (fromLocation: any, toLocation: any) => {
+    setOverlayVisible(false);
+    navigation.navigate("TripSummaryScreen", { fromLocation, toLocation });
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <MapView
-        style={styles.map}
+        style={{ flex: 1 }}
         initialRegion={{
           latitude: userLocation.latitude,
           longitude: userLocation.longitude,
@@ -39,29 +36,33 @@ const HomeScreen: React.FC = () => {
           longitudeDelta: 0.01,
         }}
       >
-        <Marker coordinate={userLocation} title="You" />
+        <Marker coordinate={{ latitude: userLocation.latitude, longitude: userLocation.longitude }} pinColor="green" />
       </MapView>
 
-      <View style={styles.bottomSheet}>
+      <TouchableOpacity style={styles.menuButton} onPress={() => setOverlayVisible(true)}>
+        <Text style={{ fontSize: 24 }}>☰</Text>
+      </TouchableOpacity>
+
+      <View style={styles.serviceGrid}>
         <FlatList
           data={services}
-          horizontal
+          numColumns={4}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.serviceItem}>
-              <View style={styles.imageContainer}>
-                <img source={item.image} style={styles.serviceImage} />
-              </View>
+            <View style={styles.serviceItem}>
+              <Image source={item.image} style={styles.serviceImage} />
               <Text style={styles.serviceName}>{item.name}</Text>
-            </TouchableOpacity>
+            </View>
           )}
-          showsHorizontalScrollIndicator={false}
         />
-
-        <TouchableOpacity style={styles.searchBox} onPress={handleSearchPress}>
-          <Text style={styles.searchText}>Where to?</Text>
-        </TouchableOpacity>
       </View>
+
+      <DestinationOverlay
+        visible={overlayVisible}
+        onClose={() => setOverlayVisible(false)}
+        onConfirm={handleConfirmDestination}
+        userLocation={userLocation}
+      />
     </View>
   );
 };
@@ -69,32 +70,31 @@ const HomeScreen: React.FC = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
-  bottomSheet: {
+  menuButton: {
+    position: "absolute",
+    top: 40,
+    left: 16,
+    backgroundColor: "#fff",
+    padding: 8,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  serviceGrid: {
     position: "absolute",
     bottom: 0,
     width: "100%",
+    maxHeight: "40%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    padding: 12,
+    padding: 8,
   },
-  serviceItem: { alignItems: "center", marginHorizontal: 8 },
-  imageContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
-    overflow: "hidden",
-    marginBottom: 4,
+  serviceItem: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    margin: 4,
   },
-  serviceImage: { width: "100%", height: "100%", resizeMode: "cover" },
-  serviceName: { fontSize: 12, fontWeight: "600" },
-  searchBox: {
-    marginTop: 12,
-    backgroundColor: "#eee",
-    padding: 12,
-    borderRadius: 12,
-  },
-  searchText: { fontSize: 16, color: "#333" },
+  serviceImage: { width: 50, height: 50, resizeMode: "cover" },
+  serviceName: { fontSize: 12, textAlign: "center", marginTop: 4 },
 });
