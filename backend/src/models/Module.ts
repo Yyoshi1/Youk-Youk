@@ -1,24 +1,17 @@
-import { Schema, model, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { ModuleSetting } from "./ModuleSetting";
 
-export interface IModule extends Document {
+@Entity()
+export class Module {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
   name: string;
-  key: string;
-  description: string;
-  enabledGlobally: boolean;
-  enabledCountries: string[]; // country ISO codes
-  createdAt: Date;
-  updatedAt: Date;
+
+  @Column({ nullable: true })
+  description?: string;
+
+  @OneToMany(() => ModuleSetting, (setting) => setting.module)
+  settings: ModuleSetting[];
 }
-
-const moduleSchema = new Schema<IModule>(
-  {
-    name: { type: String, required: true },
-    key: { type: String, required: true, unique: true },
-    description: { type: String },
-    enabledGlobally: { type: Boolean, default: true },
-    enabledCountries: { type: [String], default: [] },
-  },
-  { timestamps: true }
-);
-
-export const Module = model<IModule>("Module", moduleSchema);
