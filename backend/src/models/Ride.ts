@@ -1,37 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Driver } from "./Driver";
-import { User } from "./User";
-import { Country } from "./Country";
-import { TransportMode } from "./TransportMode";
+import { Schema, model, Document } from "mongoose";
 
-/**
- * Ride entity represents a ride requested by a user.
- * - type: VIP, shared, economic, delivery, etc.
- * - price: calculated dynamically based on distance, transport, and modules
- */
-@Entity()
-export class Ride {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @ManyToOne(() => User, (user) => user.rides)
-  user: User;
-
-  @ManyToOne(() => Driver, (driver) => driver.rides)
-  driver: Driver;
-
-  @ManyToOne(() => Country, (country) => country.rides)
-  country: Country;
-
-  @ManyToOne(() => TransportMode)
-  transportMode: TransportMode;
-
-  @Column()
-  type: string; // VIP, Shared, Economic, Delivery
-
-  @Column("decimal", { precision: 10, scale: 2 })
+export interface IRide extends Document {
+  tripId: string;
+  userId: string;
+  driverId: string;
+  transportMode: string;
+  status: string; // e.g., pending, active, completed, cancelled
   price: number;
-
-  @Column({ default: "pending" })
-  status: string; // pending, in-progress, completed, cancelled
+  dynamicPrice: number;
+  modulesApplied: string[];
+  fromLocation: string;
+  toLocation: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const rideSchema = new Schema<IRide>(
+  {
+    tripId: { type: Schema.Types.ObjectId, ref: "Trip", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    driverId: { type: Schema.Types.ObjectId, ref: "Driver", required: true },
+    transportMode: { type: String, required: true },
+    status: { type: String, default: "pending" },
+    price: { type: Number, default: 0 },
+    dynamicPrice: { type: Number, default: 0 },
+    modulesApplied: { type: [String], default: [] },
+    fromLocation: { type: String, required: true },
+    toLocation: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+export const Ride = model<IRide>("Ride", rideSchema);
