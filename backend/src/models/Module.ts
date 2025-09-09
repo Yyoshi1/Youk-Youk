@@ -1,22 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Country } from "./Country";
+import { Schema, model, Document } from "mongoose";
 
-/**
- * Module entity represents an optional feature in the YoKyok system.
- * - Can be enabled or disabled per country
- * Examples: VIP, Shared rides, Dynamic Pricing, AI Assistant, etc.
- */
-@Entity()
-export class Module {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+export interface IModule extends Document {
   name: string;
-
-  @Column({ default: true })
-  isActive: boolean;
-
-  @ManyToOne(() => Country, (country) => country.modules)
-  country: Country;
+  key: string;
+  description: string;
+  enabledGlobally: boolean;
+  enabledCountries: string[]; // country ISO codes
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const moduleSchema = new Schema<IModule>(
+  {
+    name: { type: String, required: true },
+    key: { type: String, required: true, unique: true },
+    description: { type: String },
+    enabledGlobally: { type: Boolean, default: true },
+    enabledCountries: { type: [String], default: [] },
+  },
+  { timestamps: true }
+);
+
+export const Module = model<IModule>("Module", moduleSchema);
