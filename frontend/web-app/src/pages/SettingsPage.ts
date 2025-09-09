@@ -12,7 +12,7 @@ const SettingsPage: React.FC = () => {
         <h1 className="text-2xl font-bold mb-4">الإعدادات</h1>
         <div className="space-y-4">
           <div>
-            <label>اللغة:</label>
+            <label className="block mb-1 font-medium">اللغة:</label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
@@ -24,7 +24,24 @@ const SettingsPage: React.FC = () => {
             </select>
           </div>
           <div>
-            <label>العملة:</label>
+            <label className="block mb-1 font-medium">العملة:</label>
             <select
               value={currency}
-              onChange={(
+              onChange={(e) => setCurrency(e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="MAD">درهم مغربي (MAD)</option>
+              <option value="EUR">يورو (EUR)</option>
+              <option value="USD">دولار أمريكي (USD)</option>
+            </select>
+          </div>
+          <button className="px-4 py-2 bg-blue-600 text-white rounded">
+            حفظ الإعدادات
+          </button>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default SettingsPage;
