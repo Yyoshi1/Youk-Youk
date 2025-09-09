@@ -1,33 +1,33 @@
-import { Schema, model, Document } from "mongoose";
-import { AccountType } from "./User";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Ride } from "./Ride";
+import { Trip } from "./Trip";
 
-export interface IDriver extends Document {
-  userId: string;
-  vehicles: string[]; // vehicle IDs
-  trips: string[]; // trip IDs
-  ratings: number;
-  earnings: number;
-  active: boolean;
-  modules: string[];
-  language: string;
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
+@Entity()
+export class Driver {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  password: string;
+
+  @Column()
+  fullName: string;
+
+  @Column({ nullable: true })
+  phoneNumber?: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ nullable: true })
+  countryId?: number;
+
+  @OneToMany(() => Ride, (ride) => ride.driver)
+  rides: Ride[];
+
+  @OneToMany(() => Trip, (trip) => trip.driver)
+  trips: Trip[];
 }
-
-const driverSchema = new Schema<IDriver>(
-  {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    vehicles: { type: [String], default: [] },
-    trips: { type: [String], default: [] },
-    ratings: { type: Number, default: 0 },
-    earnings: { type: Number, default: 0 },
-    active: { type: Boolean, default: true },
-    modules: { type: [String], default: [] },
-    language: { type: String, default: "en" },
-    currency: { type: String, default: "USD" },
-  },
-  { timestamps: true }
-);
-
-export const Driver = model<IDriver>("Driver", driverSchema);
