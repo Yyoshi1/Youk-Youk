@@ -1,18 +1,20 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
+export type ModuleStatus = "active" | "inactive";
+
 @Entity()
 export class Module {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
-  @Column({ default: true })
-  isActive: boolean;
-
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   description: string;
+
+  @Column({ type: "enum", enum: ["active", "inactive"], default: "inactive" })
+  status: ModuleStatus;
 
   @CreateDateColumn()
   createdAt: Date;
