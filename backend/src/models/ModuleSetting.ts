@@ -1,17 +1,21 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Country } from "./Country";
+import { Module } from "./Module";
 
+/**
+ * ModuleSetting entity represents the configuration of a module.
+ * - Allows specific settings per module per country
+ */
 @Entity()
 export class ModuleSetting {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  moduleName: string;
+  @ManyToOne(() => Module)
+  module: Module;
 
   @Column()
-  enabled: boolean;
+  key: string;
 
-  @ManyToOne(() => Country, (country) => country.moduleSettings)
-  country: Country;
+  @Column()
+  value: string;
 }
