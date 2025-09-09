@@ -1,18 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
-import { Vehicle } from "./Vehicle";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Country } from "./Country";
 
 @Entity()
 export class Module {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", length: 100 })
   name: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ type: "text", nullable: true })
+  description: string;
 
-  @ManyToMany(() => Vehicle)
-  @JoinTable()
-  vehicles: Vehicle[];
+  @Column({ type: "boolean", default: true })
+  isActiveGlobally: boolean;
+
+  @Column({ type: "boolean", default: false })
+  isActiveForCountry: boolean;
+
+  @ManyToOne(() => Country, (country) => country.modules, { nullable: true })
+  country: Country | null;
 }
