@@ -1,37 +1,37 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Driver } from "./Driver";
 import { User } from "./User";
-import { Vehicle } from "./Vehicle";
 import { Country } from "./Country";
+import { TransportMode } from "./TransportMode";
 
+/**
+ * Ride entity represents a ride requested by a user.
+ * - type: VIP, shared, economic, delivery, etc.
+ * - price: calculated dynamically based on distance, transport, and modules
+ */
 @Entity()
 export class Ride {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User, (user) => user.rides)
-  passenger: User;
+  user: User;
 
-  @ManyToOne(() => User, (user) => user.rides)
-  driver: User;
-
-  @ManyToOne(() => Vehicle, (vehicle) => vehicle.rides)
-  vehicle: Vehicle;
+  @ManyToOne(() => Driver, (driver) => driver.rides)
+  driver: Driver;
 
   @ManyToOne(() => Country, (country) => country.rides)
   country: Country;
 
-  @Column({ type: "varchar", length: 200 })
-  fromLocation: string;
+  @ManyToOne(() => TransportMode)
+  transportMode: TransportMode;
 
-  @Column({ type: "varchar", length: 200 })
-  toLocation: string;
+  @Column()
+  type: string; // VIP, Shared, Economic, Delivery
 
-  @Column({ type: "float", default: 0 })
+  @Column("decimal", { precision: 10, scale: 2 })
   price: number;
 
-  @Column({ type: "varchar", length: 50, default: "pending" })
-  status: string; // pending, ongoing, completed, cancelled
-
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({ default: "pending" })
+  status: string; // pending, in-progress, completed, cancelled
 }
