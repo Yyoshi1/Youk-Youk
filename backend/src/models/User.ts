@@ -1,6 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Ride } from "./Ride";
+import { Module } from "./Module";
 
-export type UserRole = "passenger" | "driver" | "admin";
+export enum UserRole {
+  PASSENGER = "passenger",
+  DRIVER = "driver",
+  ADMIN = "admin",
+}
 
 @Entity()
 export class User {
@@ -8,7 +14,7 @@ export class User {
   id: number;
 
   @Column()
-  fullName: string;
+  name: string;
 
   @Column({ unique: true })
   email: string;
@@ -16,15 +22,16 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: "enum", enum: ["passenger", "driver", "admin"], default: "passenger" })
+  @Column({
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.PASSENGER,
+  })
   role: UserRole;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @OneToMany(() => Ride, (ride) => ride.user)
+  rides: Ride[];
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @OneToMany(() => Module, (module) => module.user)
+  modules: Module[];
 }
