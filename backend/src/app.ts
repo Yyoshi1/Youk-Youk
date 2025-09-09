@@ -1,16 +1,13 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import countryRoutes from "./routes/countries";
-import tripRoutes from "./routes/trips";
-import aiRoutes from "./routes/ai";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { LandingPage } from "./pages/LandingPage";
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+const App: React.FC = () => (
+  <Router>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+    </Routes>
+  </Router>
+);
 
-app.use("/countries", countryRoutes);
-app.use("/trips", tripRoutes);
-app.use("/ai", aiRoutes);
-
-app.listen(4000, () => console.log("Backend running on port 4000"));
+export default App;
