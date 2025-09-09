@@ -1,154 +1,37 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput, ScrollView, Image } from "react-native";
-import MapView, { Marker, MapEvent } from "react-native-maps";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { useNavigation } from "@react-navigation/native";
 
-type Location = {
-  latitude: number;
-  longitude: number;
-  name: string;
-};
-
-type VehicleType = {
+// 
+type ServiceType = {
   id: string;
   name: string;
-  image: any; // path to image or require
-  price: number;
+  image: string; // path to vehicle image
 };
 
-// Mock previous locations
-const mockHistory = [
-  { name: "Airport" },
-  { name: "Hotel" },
-  { name: "Shopping Center" },
+const services: ServiceType[] = [
+  { id: "ride", name: "Ride", image: require("../assets/ride.png") },
+  { id: "comfort", name: "Comfort", image: require("../assets/comfort.png") },
+  { id: "bike", name: "Bike", image: require("../assets/bike.png") },
+  { id: "youkyouk", name: "Youkyouk", image: require("../assets/youkyouk.png") },
+  { id: "travel", name: "Travel", image: require("../assets/travel.png") },
+  { id: "shipping", name: "Shipping", image: require("../assets/shipping.png") },
+  { id: "company", name: "Company", image: require("../assets/company.png") },
 ];
-
-// Mock vehicle types with images
-const vehicleTypes: VehicleType[] = [
-  { id: "ride", name: "Ride", image: require("../../assets/vehicles/ride.png"), price: 10 },
-  { id: "comfort", name: "Comfort", image: require("../../assets/vehicles/comfort.png"), price: 15 },
-  { id: "bike", name: "Bike", image: require("../../assets/vehicles/bike.png"), price: 5 },
-  { id: "youkyouk", name: "Youkyouk Taxi", image: require("../../assets/vehicles/youkyouk.png"), price: 12 },
-  { id: "travel", name: "Travel", image: require("../../assets/vehicles/travel.png"), price: 20 },
-  { id: "shipping", name: "Shipping", image: require("../../assets/vehicles/shipping.png"), price: 25 },
-  { id: "company", name: "Transport Company", image: require("../../assets/vehicles/company.png"), price: 30 },
-];
-
-// Services Grid
-const services = vehicleTypes.map((v) => ({ id: v.id, name: v.name, image: v.image }));
-
-interface DestinationOverlayProps {
-  visible: boolean;
-  onClose: () => void;
-  onConfirm: (fromLocation: Location, toLocation: Location) => void;
-  userLocation: Location;
-}
-
-const DestinationOverlay: React.FC<DestinationOverlayProps> = ({ visible, onClose, onConfirm, userLocation }) => {
-  const [activeField, setActiveField] = useState<"from" | "to">("from");
-  const [fromLocation, setFromLocation] = useState<Location>(userLocation);
-  const [toLocation, setToLocation] = useState<Location>({ latitude: 0, longitude: 0, name: "" });
-
-  const handleMapPress = (e: MapEvent) => {
-    const coords = e.nativeEvent.coordinate;
-    if (activeField === "from") {
-      setFromLocation({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        name: `Manual Location (${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)})`,
-      });
-    } else {
-      setToLocation({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        name: `Manual Location (${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)})`,
-      });
-    }
-  };
-
-  const handleHistorySelect = (locationName: string) => {
-    if (activeField === "from") setFromLocation({ ...fromLocation, name: locationName });
-    else setToLocation({ ...toLocation, name: locationName });
-  };
-
-  return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.overlay}>
-        <MapView
-          style={styles.map}
-          onPress={handleMapPress}
-          initialRegion={{
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }}
-        >
-          <Marker coordinate={{ latitude: fromLocation.latitude, longitude: fromLocation.longitude }} pinColor="green" />
-          <Marker coordinate={{ latitude: toLocation.latitude, longitude: toLocation.longitude }} pinColor="red" />
-        </MapView>
-
-        <View style={styles.container}>
-          <Text style={styles.label}>Select current location or destination:</Text>
-
-          <TouchableOpacity onPress={() => setActiveField("from")} style={[styles.input, activeField === "from" && styles.activeInput]}>
-            <TextInput
-              value={fromLocation.name}
-              onChangeText={(text) => setFromLocation({ ...fromLocation, name: text })}
-              placeholder="Current Location"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setActiveField("to")} style={[styles.input, activeField === "to" && styles.activeInput]}>
-            <TextInput
-              value={toLocation.name}
-              onChangeText={(text) => setToLocation({ ...toLocation, name: text })}
-              placeholder="Destination"
-            />
-          </TouchableOpacity>
-
-          <Text style={styles.label}>Previous locations:</Text>
-          <FlatList
-            data={mockHistory}
-            horizontal
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleHistorySelect(item.name)} style={styles.historyItem}>
-                <Text>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-
-          <View style={styles.buttons}>
-            <TouchableOpacity onPress={() => onConfirm(fromLocation, toLocation)} style={styles.confirmButton}>
-              <Text style={styles.confirmText}>Confirm</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onClose} style={styles.cancelButton}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-};
 
 const HomeScreen: React.FC = () => {
-  const [overlayVisible, setOverlayVisible] = useState(false);
-  const [userLocation] = useState<Location>({ latitude: 37.78825, longitude: -122.4324, name: "Current Location" });
-  const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>(vehicleTypes[0]);
-  const [fromLocation, setFromLocation] = useState<Location>(userLocation);
-  const [toLocation, setToLocation] = useState<Location>({ latitude: 0, longitude: 0, name: "" });
+  const [userLocation, setUserLocation] = useState({ latitude: 37.78825, longitude: -122.4324 });
+  const navigation = useNavigation();
 
-  const handleConfirmDestination = (from: Location, to: Location) => {
-    setFromLocation(from);
-    setToLocation(to);
-    setOverlayVisible(false);
+  const handleSearchPress = () => {
+    navigation.navigate("DestinationSearch", { userLocation });
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <MapView
-        style={{ flex: 1 }}
+        style={styles.map}
         initialRegion={{
           latitude: userLocation.latitude,
           longitude: userLocation.longitude,
@@ -156,55 +39,29 @@ const HomeScreen: React.FC = () => {
           longitudeDelta: 0.01,
         }}
       >
-        <Marker coordinate={{ latitude: fromLocation.latitude, longitude: fromLocation.longitude }} pinColor="green" />
-        <Marker coordinate={{ latitude: toLocation.latitude, longitude: toLocation.longitude }} pinColor="red" />
+        <Marker coordinate={userLocation} title="You" />
       </MapView>
 
-      {/* Top Menu Icon */}
-      <TouchableOpacity style={styles.menuIcon} onPress={() => alert("Open bottom menu")}>
-        <Text style={{ fontSize: 24 }}>☰</Text>
-      </TouchableOpacity>
-
-      {/* Services Grid */}
-      <View style={styles.servicesContainer}>
-        {services.map((s) => (
-          <TouchableOpacity key={s.id} style={styles.serviceItem}>
-            <Image source={s.image} style={styles.serviceImage} resizeMode="contain" />
-            <Text style={styles.serviceText}>{s.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Vehicle Selection */}
-      <View style={styles.vehicleScrollContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {vehicleTypes.map((v) => (
-            <TouchableOpacity
-              key={v.id}
-              style={[styles.vehicleItem, selectedVehicle.id === v.id && styles.selectedVehicle]}
-              onPress={() => setSelectedVehicle(v)}
-            >
-              <Image source={v.image} style={styles.vehicleImage} resizeMode="contain" />
-              <Text style={styles.vehicleText}>{v.name}</Text>
-              <Text style={styles.vehiclePrice}>${v.price}</Text>
+      <View style={styles.bottomSheet}>
+        <FlatList
+          data={services}
+          horizontal
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.serviceItem}>
+              <View style={styles.imageContainer}>
+                <img source={item.image} style={styles.serviceImage} />
+              </View>
+              <Text style={styles.serviceName}>{item.name}</Text>
             </TouchableOpacity>
-          ))}
-        </ScrollView>
+          )}
+          showsHorizontalScrollIndicator={false}
+        />
+
+        <TouchableOpacity style={styles.searchBox} onPress={handleSearchPress}>
+          <Text style={styles.searchText}>Where to?</Text>
+        </TouchableOpacity>
       </View>
-
-      <DestinationOverlay
-        visible={overlayVisible}
-        onClose={() => setOverlayVisible(false)}
-        onConfirm={handleConfirmDestination}
-        userLocation={userLocation}
-      />
-
-      {/* Destination Input Trigger */}
-      <TouchableOpacity style={styles.destinationInput} onPress={() => setOverlayVisible(true)}>
-        <Text>
-          {fromLocation.name} → {toLocation.name || "Destination"}
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -212,22 +69,32 @@ const HomeScreen: React.FC = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  menuIcon: {
+  container: { flex: 1 },
+  map: { flex: 1 },
+  bottomSheet: {
     position: "absolute",
-    top: 40,
-    left: 20,
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 30,
-    zIndex: 1000,
-  },
-  servicesContainer: {
-    position: "absolute",
-    bottom: 150,
+    bottom: 0,
     width: "100%",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 12,
   },
-  serviceItem: {
-    width: 80,
+  serviceItem: { alignItems: "center", marginHorizontal: 8 },
+  imageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginBottom: 4,
+  },
+  serviceImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  serviceName: { fontSize: 12, fontWeight: "600" },
+  searchBox: {
+    marginTop: 12,
+    backgroundColor: "#eee",
+    padding: 12,
+    borderRadius: 12,
+  },
+  searchText: { fontSize: 16, color: "#333" },
+});
