@@ -1,34 +1,27 @@
-import { Schema, model, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import { Driver } from "./Driver";
+import { Ride } from "./Ride";
 
-export interface IVehicle extends Document {
-  driverId: string;
-  type: string; // car, bike, truck, etc.
+@Entity()
+export class Vehicle {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   model: string;
-  licensePlate: string;
-  imageUrl: string;
+
+  @Column({ nullable: true })
+  plateNumber?: string;
+
+  @Column({ nullable: true })
+  image?: string;
+
+  @Column()
   capacity: number;
-  baseFare: number;
-  perKmFare: number;
-  dynamicPricingEnabled: boolean;
-  modulesApplicable: string[];
-  createdAt: Date;
-  updatedAt: Date;
+
+  @ManyToOne(() => Driver, (driver) => driver.id)
+  owner: Driver;
+
+  @OneToMany(() => Ride, (ride) => ride.transportMode)
+  rides: Ride[];
 }
-
-const vehicleSchema = new Schema<IVehicle>(
-  {
-    driverId: { type: Schema.Types.ObjectId, ref: "Driver", required: true },
-    type: { type: String, required: true },
-    model: { type: String, required: true },
-    licensePlate: { type: String, required: true, unique: true },
-    imageUrl: { type: String },
-    capacity: { type: Number, default: 1 },
-    baseFare: { type: Number, default: 0 },
-    perKmFare: { type: Number, default: 0 },
-    dynamicPricingEnabled: { type: Boolean, default: true },
-    modulesApplicable: { type: [String], default: [] },
-  },
-  { timestamps: true }
-);
-
-export const Vehicle = model<IVehicle>("Vehicle", vehicleSchema);
