@@ -1,37 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
-import { Country } from "./Country";
-import { Module } from "./Module";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
+/**
+ * Admin entity represents an administrator in the YoKyok system.
+ * Admins can be global or country-specific.
+ */
 @Entity()
 export class Admin {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 100 })
-  name: string;
+  @Column()
+  firstName: string;
 
-  @Column({ type: "varchar", length: 100, unique: true })
+  @Column()
+  lastName: string;
+
+  @Column({ unique: true })
   email: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column()
   password: string;
 
-  @ManyToMany(() => Country)
-  @JoinTable({
-    name: "admin_countries",
-    joinColumn: { name: "adminId", referencedColumnName: "id" },
-    inverseJoinColumn: { name: "countryId", referencedColumnName: "id" },
-  })
-  countries: Country[];
-
-  @ManyToMany(() => Module)
-  @JoinTable({
-    name: "admin_modules",
-    joinColumn: { name: "adminId", referencedColumnName: "id" },
-    inverseJoinColumn: { name: "moduleId", referencedColumnName: "id" },
-  })
-  modules: Module[];
-
-  @Column({ type: "boolean", default: true })
-  isSuperAdmin: boolean;
+  @Column({ default: true })
+  isSuperAdmin: boolean; // true = global admin, false = country admin
 }
