@@ -1,47 +1,43 @@
-import { DataSource } from "typeorm";
+import { AppDataSource } from "../data-source";
 import { Country } from "../models/Country";
 import { User } from "../models/User";
 import { Trip } from "../models/Trip";
-import { Module } from "../models/Module";
 
-export async function seedDemoData(dataSource: DataSource) {
-  // إنشاء دول متعددة
+export const initDemoData = async () => {
   const countries = ["Morocco", "France", "USA"];
-  for (const name of countries) {
-    const country = new Country();
-    country.name = name;
-    country.language = name === "Morocco" ? "fr" : "en";
-    await dataSource.manager.save(country);
+  const roles = ["Passenger", "Driver", "Admin"];
+  const transportModes = ["Car", "SmallTruck", "BigTruck", "ElectricBike"];
 
-    // تفعيل Modules لكل دولة
-    const modules = ["VIP", "Shared", "Eco", "Delivery", "DynamicPricing"];
-    for (const m of modules) {
-      const module = new Module();
-      module.name = m;
-      module.active = true;
-      module.country = country;
-      await dataSource.manager.save(module);
+  for (const countryName of countries) {
+    const country = new Country();
+    country.name = countryName;
+    country.language = countryName === "Morocco" ? "fr" : "en";
+    await AppDataSource.manager.save(country);
+
+    for (const role of roles) {
+      const user = new User();
+      user.name = `${countryName} Demo ${role}`;
+      user.email = `${role.toLowerCase()}@${countryName.toLowerCase()}.com`;
+      user.password = "demo123";
+      user.role = role; // Passenger / Driver / Admin
+      user.country = country;
+      await AppDataSource.manager.save(user);
     }
 
-    // إنشاء مستخدم تجريبي
-    const user = new User();
-    user.name = `${name} Demo User`;
-    user.email = `${name.toLowerCase()}@demo.com`;
-    user.password = "demo123";
-    user.country = country;
-    await dataSource.manager.save(user);
-
-    // إنشاء رحلات تجريبية
-    for (let i = 0; i < 5; i++) {
-      const trip = new Trip();
-      trip.user = user;
-      trip.type = i % 2 === 0 ? "VIP" : "Eco";
-      trip.origin = "Point A";
-      trip.destination = "Point B";
-      trip.country = country;
-      await dataSource.manager.save(trip);
+    // إنشاء رحلات افتراضية لكل راكب
+    const passengers = await AppDataSource.manager.find(User, { where: { role: "Passenger", country: country } });
+    
+    for (const passenger of passengers) {
+      for (let i = 0; i < 3; i++) {
+        const trip = new Trip();
+        trip.user = passenger;
+        trip.type = i % 2 === 0 ? "VIP" : "Eco";
+        trip.origin = "Point A";
+        trip.destination = "Point B";
+        trip.country = country;
+        trip.transportMode = transportModes[i % transportModes.length];
+        await AppDataSource.manager.save(trip);
+      }
     }
   }
-
-  console.log("✅ Demo Data + Multi-Country تم تهيئتها بنجاح");
-}
+};
