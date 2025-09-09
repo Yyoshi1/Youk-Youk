@@ -1,9 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
+export type UserRole = "passenger" | "driver" | "admin";
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  fullName: string;
 
   @Column({ unique: true })
   email: string;
@@ -11,8 +16,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: "passenger" })
-  role: "passenger" | "driver" | "admin";
+  @Column({ type: "enum", enum: ["passenger", "driver", "admin"], default: "passenger" })
+  role: UserRole;
 
   @Column({ default: true })
   isActive: boolean;
