@@ -1,52 +1,28 @@
 import { Module } from "../models/Module";
-import { ModuleSetting } from "../models/ModuleSetting";
-import { Country } from "../models/Country";
+import { getRepository } from "typeorm";
 
-/**
- * ModuleService
- * إدارة كل الـ Modules لكل دولة وعالميًا
- */
 export class ModuleService {
-  /**
-   * تفعيل Module لدولة محددة
-   */
-  static async enableModule(countryId: string, moduleName: string) {
-    const country = await Country.findById(countryId);
-    if (!country) throw new Error("Country not found");
+  private repo = getRepository(Module);
 
-    let moduleSetting = await ModuleSetting.findOne({ country: countryId, moduleName });
-    if (!moduleSetting) {
-      moduleSetting = new ModuleSetting({ country: countryId, moduleName, enabled: true });
-    } else {
-      moduleSetting.enabled = true;
-    }
-    await moduleSetting.save();
-    return moduleSetting;
+  async create(data: Partial<Module>) {
+    const module = this.repo.create(data);
+    return this.repo.save(module);
   }
 
-  /**
-   * تعطيل Module لدولة محددة
-   */
-  static async disableModule(countryId: string, moduleName: string) {
-    const moduleSetting = await ModuleSetting.findOne({ country: countryId, moduleName });
-    if (!moduleSetting) throw new Error("Module setting not found");
-
-    moduleSetting.enabled = false;
-    await moduleSetting.save();
-    return moduleSetting;
+  async getById(id: number) {
+    return this.repo.findOne({ where: { id } });
   }
 
-  /**
-   * جلب كل الـ Modules الفعالة لدولة معينة
-   */
-  static async getActiveModules(countryId: string) {
-    return await ModuleSetting.find({ country: countryId, enabled: true });
+  async getAll() {
+    return this.repo.find();
   }
 
-  /**
-   * جلب إعدادات Module محدد
-   */
-  static async getModuleSettings(countryId: string, moduleName: string) {
-    return await ModuleSetting.findOne({ country: countryId, moduleName });
+  async update(id: number, data: Partial<Module>) {
+    await this.repo.update(id, data);
+    return this.getById(id);
+  }
+
+  async delete(id: number) {
+    return this.repo.delete(id);
   }
 }
