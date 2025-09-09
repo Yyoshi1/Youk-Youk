@@ -1,42 +1,47 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
 import { User } from "./User";
 import { Vehicle } from "./Vehicle";
 import { Country } from "./Country";
 
-export type RideStatus = "pending" | "accepted" | "in_progress" | "completed" | "cancelled";
+export enum RideStatus {
+  PENDING = "pending",
+  ONGOING = "ongoing",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+}
 
 @Entity()
 export class Ride {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, (user) => user.ridesAsPassenger)
   passenger: User;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, (user) => user.ridesAsDriver)
   driver: User;
 
-  @ManyToOne(() => Vehicle, { eager: true })
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.rides)
   vehicle: Vehicle;
 
-  @Column({ type: "varchar", length: 100 })
-  fromLocation: string;
-
-  @Column({ type: "varchar", length: 100 })
-  toLocation: string;
-
-  @Column({ type: "float", default: 0 })
-  price: number;
-
-  @Column({ type: "enum", enum: ["pending", "accepted", "in_progress", "completed", "cancelled"], default: "pending" })
-  status: RideStatus;
-
-  @ManyToOne(() => Country)
+  @ManyToOne(() => Country, (country) => country.id)
   country: Country;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ type: "varchar", length: 255 })
+  fromLocation: string;
+
+  @Column({ type: "varchar", length: 255 })
+  toLocation: string;
+
+  @Column({ type: "enum", enum: RideStatus, default: RideStatus.PENDING })
+  status: RideStatus;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  price: number;
+
+  @CreateDateColumn()
   createdAt: Date;
 
   @Column({ type: "timestamp", nullable: true })
-  updatedAt: Date;
+  completedAt: Date;
 }
