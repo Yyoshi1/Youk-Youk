@@ -1,42 +1,37 @@
-import { Schema, model, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Ride } from "./Ride";
+import { Trip } from "./Trip";
 
-export enum AccountType {
-  PASSENGER = "passenger",
-  DRIVER = "driver",
-  ADMIN = "admin",
-}
+// User entity represents a passenger, driver, or admin depending on role
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-export interface IUser extends Document {
-  name: string;
+  @Column({ unique: true })
   email: string;
-  phone: string;
+
+  @Column()
   password: string;
-  accountType: AccountType;
-  country: string;
-  roles: string[];
-  modules: string[];
-  language: string;
-  currency: string;
-  profileCompleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+
+  @Column()
+  fullName: string;
+
+  @Column({ nullable: true })
+  phoneNumber?: string;
+
+  @Column({ default: "passenger" }) // passenger, driver, admin
+  role: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ nullable: true })
+  countryId?: number;
+
+  @OneToMany(() => Ride, (ride) => ride.user)
+  rides: Ride[];
+
+  @OneToMany(() => Trip, (trip) => trip.user)
+  trips: Trip[];
 }
-
-const userSchema = new Schema<IUser>(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    accountType: { type: String, enum: Object.values(AccountType), required: true },
-    country: { type: String, required: true },
-    roles: { type: [String], default: [] },
-    modules: { type: [String], default: [] },
-    language: { type: String, default: "en" },
-    currency: { type: String, default: "USD" },
-    profileCompleted: { type: Boolean, default: false },
-  },
-  { timestamps: true }
-);
-
-export const User = model<IUser>("User", userSchema);
