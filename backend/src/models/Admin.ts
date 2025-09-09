@@ -1,32 +1,22 @@
-import { Schema, model, Document } from "mongoose";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-export interface IAdmin extends Document {
-  name: string;
+@Entity()
+export class Admin {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
   email: string;
-  phone: string;
+
+  @Column()
   password: string;
-  roles: string[]; // e.g., global admin, country admin
-  country?: string; // optional if local admin
-  modules: string[]; // modules admin can control
-  language: string;
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
+
+  @Column()
+  fullName: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ nullable: true })
+  countryId?: number;
 }
-
-const adminSchema = new Schema<IAdmin>(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    roles: { type: [String], default: [] },
-    country: { type: String },
-    modules: { type: [String], default: [] },
-    language: { type: String, default: "en" },
-    currency: { type: String, default: "USD" },
-  },
-  { timestamps: true }
-);
-
-export const Admin = model<IAdmin>("Admin", adminSchema);
